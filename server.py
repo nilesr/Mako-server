@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes
+import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess
 from mako.lookup import TemplateLookup
 from mako import exceptions
 mimetypes.init()
@@ -7,8 +7,15 @@ config = ConfigParser.SafeConfigParser()
 config.read("config.conf")
 
 if __debug__:
-	print "Use -O"
-	sys.exit(1)
+	print "Restarting with -O"
+	listofarguments = ["/usr/bin/env", "python", "-O"]
+	for argument in sys.argv:
+		if argument == __file__:
+			continue
+		listofarguments.append(argument)
+	listofarguments.append(__file__)
+	sys.exit(subprocess.call(listofarguments))
+	
 	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
 
 root = config.get("server","root")
