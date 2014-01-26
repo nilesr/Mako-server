@@ -1,8 +1,8 @@
 #!/usr/bin/python
-import cgi, re, os, posixpath, mimetypes, sys, ConfigParser
+import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes
 from mako.lookup import TemplateLookup
 from mako import exceptions
-
+mimetypes.init()
 config = ConfigParser.SafeConfigParser()
 config.read("config.conf")
 
@@ -11,8 +11,16 @@ if __debug__:
 	sys.exit(1)
 	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
 
-root = '/var/www/'
-port = 4000
+root = config.get("server","root")
+try:
+	port = int(config.get("server","port"))
+except ValueError:
+	print "The port in config.conf must be an integer"
+	sys.exit(1)
+try:
+	servestaticfiles = bool(config.get("server","servestaticfiles"))
+except:
+	print "The servestaticfiles value in config.conf must be a boolean"
 class error404:
 	def __init__(self):
 		pass
@@ -60,9 +68,15 @@ def serve(environ, start_response):
 			filename = root + u
 			if not os.path.exists(filename):
 				raise error404()
-			start_response("200 OK", [('Content-type','text/html')])
-			#return [file(filename).read()]			
-			return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("no.static.pyhtml").render(filename=filename,config=config)
+			if servestaticfiles == True:
+				mime = mimetypes.guess_type(filename)[0]
+				if not mime:
+					mime = "text/text"
+				start_response("200 OK", [('Content-type',mime)])
+				return [file(filename).read()]			
+			else:
+				start_response("200 OK", [('Content-type','text/html')])
+				return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("no.static.pyhtml").render(filename=filename,config=config)
 		except error404:
 			return serverError(start_response,404,uri)
 		except:
