@@ -18,9 +18,9 @@ except ValueError:
 	print "The port in config.conf must be an integer"
 	sys.exit(1)
 try:
-	servestaticfiles = bool(config.get("server","servestaticfiles"))
+	servestaticfiles = bool(int(config.get("server","servestaticfiles")))
 except:
-	print "The servestaticfiles value in config.conf must be a boolean"
+	print "The servestaticfiles value in config.conf should be a 1 or a 0"
 class error404:
 	def __init__(self):
 		pass
