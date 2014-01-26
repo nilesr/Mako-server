@@ -1,0 +1,16 @@
+<%!
+import cgi
+%>
+<html>
+<head>
+<link rel="stylesheet" href="http://niles.mooo.com/style.css" />
+<title>Error 404 - File or directory does not exist</title>
+</head>
+<body>
+<h2>404 error</h2>
+<div id="content">
+<h3>The file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(filename)}</span> could not be found</h3>
+Please report a broken link to whoever led you here, or if you think this page should exist, report it to the owner <a href="mailto:${cgi.escape(config.get("ownerinfo","email"))}">here</a>
+</div>
+</body>
+</html>
