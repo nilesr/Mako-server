@@ -29,6 +29,10 @@ try:
 	servestaticfiles = bool(int(config.get("server","servestaticfiles")))
 except:
 	print "The servestaticfiles value in config.conf should be a 1 or a 0"
+try:
+	listdirectories = bool(int(config.get("server","listdirectories")))
+except:
+	print "The listdirectories value in config.conf should be a 1 or a 0"
 class error404:
 	def __init__(self):
 		pass
@@ -42,6 +46,9 @@ def serverError(start_response,status,filename=""):
 	elif status == 404:
 		start_response("404 Not found", [('Content-type','text/html')])
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-404.pyhtml").render(filename=filename,config=config)
+	elif status == 403:
+		start_response("403 Permission denied", [('Content-type','text/html')])
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
 		print "You dun fucked up"
 		sys.exit(1)
@@ -69,6 +76,12 @@ def serve(environ, start_response):
 		if not uri[-1] == '/':
 			uri = uri + "/"
 		uri = uri + "index.pyhtml"
+		if not os.path.exists(filename):
+			if listdirectories:
+				start_response("200 OK", [('Content-type','text/html')])
+				return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("list.pyhtml").render(filename=filename,config=config)
+			else:
+				return serverError(start_response,403,uri)
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			template = lookup.get_template(uri)
