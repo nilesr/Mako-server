@@ -14,6 +14,7 @@ if __debug__:
 			continue
 		listofarguments.append(argument)
 	listofarguments.append(__file__)
+	print "Calling " + " ".join(listofarguments)
 	sys.exit(subprocess.call(listofarguments))
 	
 	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
@@ -59,7 +60,15 @@ def serve(environ, start_response):
 		uri = '/index.pyhtml'
 	else:
 		uri = re.sub(r'^/$', '/index.pyhtml', uri)
-
+	u = re.sub(r'^\/+', '', uri)
+	filename = root + u
+	if os.path.isdir(filename):
+		if not filename[-1] == '/':
+			filename = filename + "/"
+		filename = filename + "index.pyhtml"
+		if not uri[-1] == '/':
+			uri = uri + "/"
+		uri = uri + "index.pyhtml"
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			template = lookup.get_template(uri)
@@ -71,8 +80,6 @@ def serve(environ, start_response):
 			return serverError(start_response,500)
 	else:
 		try:
-			u = re.sub(r'^\/+', '', uri)
-			filename = root + u
 			if not os.path.exists(filename):
 				raise error404()
 			if servestaticfiles == True:
