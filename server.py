@@ -148,6 +148,7 @@ def serve(environ, start_response):
 			if listdirectories:
 				try:
 					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("list.pyhtml").render(filename=filename,config=config)
+					# Note that all other templates get filename=uri and this gets filename=filename. This is because this file needs to check the date modified and other elements of the file in question, which requires an absolute path. It could be added as filename = config.get("server","root") + uri, but I already have this set up.
 					start_response("200 OK", [('Content-type','text/html')])
 					return rendered
 				except OSError:
@@ -177,7 +178,7 @@ def serve(environ, start_response):
 				start_response("200 OK", [('Content-type',mime)])
 				return [file(filename).read()]			
 			else:
-				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("no.static.pyhtml").render(filename=filename,config=config)
+				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("no.static.pyhtml").render(filename=uri,config=config)
 				start_response("200 OK", [('Content-type','text/html')])
 				return rendered
 		except error404:
