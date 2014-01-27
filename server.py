@@ -10,8 +10,10 @@ config = ConfigParser.SafeConfigParser()
 configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
 logfileobject = False
 def log(missive):
-	if logfileobject:
+	if logfile:
+		logfileobject = open(logfile,'w')
 		logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
+		logfileobject.close()
 	print sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive
 def signaled(sihipsterm, stack):
 	log("Caught signal " + str(sihipsterm) + ", exiting.")
@@ -111,7 +113,6 @@ try:
 except:
 	log("The listdirectories value in config.conf should be a 1 or a 0")
 logfile = config.get("server","logfile")
-logfileobject = open(logfile,'w')
 class error404:
 	def __init__(self):
 		pass
