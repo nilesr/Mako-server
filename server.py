@@ -1,16 +1,21 @@
 #!/usr/bin/env python -O
-import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess, glob, signal
+import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess, glob, signal, time
 from mako.lookup import TemplateLookup
 from mako import exceptions
 mimetypes.init()
 config = ConfigParser.SafeConfigParser()
-configfile = "config.conf"
+configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
+logfileobject = False
+def log(missive):
+	if logfileobject:
+		logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
+	print sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive
 def signaled(sihipsterm, stack):
-	print "Caught signal " + str(sihipsterm) + ", exiting."
+	log("Caught signal " + str(sihipsterm) + ", exiting.")
 	try:
 		os.remove(pidfile)
 	except OSError:
-		print "Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place"
+		log("Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
 	sys.exit(0)
 for i in [2,3,6,15]:
 	try:
@@ -20,14 +25,14 @@ for i in [2,3,6,15]:
 		pass
 
 if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
-	print "Restarting with -O"
+	log("Restarting with -O")
 	listofarguments = ["/usr/bin/env", "python", "-O"]
 	for argument in sys.argv:
 		if argument == __file__:
 			continue
 		listofarguments.append(argument)
 	listofarguments.append(__file__)
-	print "Calling " + " ".join(listofarguments)
+	log("Calling " + " ".join(listofarguments))
 	try:
 		sys.exit(subprocess.call(listofarguments))
 	except:
@@ -37,7 +42,7 @@ nextarg=""
 killkillKILL = True
 for argument in sys.argv:
 	if argument == "-h" or argument.lower() == "--help":
-		print "Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--suppress-urge-to-kill]"
+		log("Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--suppress-urge-to-kill]")
 		sys.exit(0)
 	if nextarg == "pidfile":
 		os.remove(pidfile)
@@ -62,7 +67,7 @@ for argument in sys.argv:
 try:
 	config.readfp(open(configfile))
 except:
-	print "Config file read failure"
+	log("Config file read failure")
 	sys.exit(1)
 if killkillKILL:
 	for otherpidfile in glob.glob("/tmp/mako.*"):
@@ -79,7 +84,7 @@ if killkillKILL:
 			try:
 				os.kill(otherpid,9)
 			except OSError:
-				print "Either the other process has ended, or I don't have permission to kill it."
+				log("Either the other process has ended, or I don't have permission to kill it.")
 				pass
 		except:
 			pass
@@ -92,16 +97,18 @@ root = config.get("server","root")
 try:
 	port = int(config.get("server","port"))
 except ValueError:
-	print "The port in config.conf must be an integer"
+	log("The port in config.conf must be an integer")
 	sys.exit(1)
 try:
 	servestaticfiles = bool(int(config.get("server","servestaticfiles")))
 except:
-	print "The servestaticfiles value in config.conf should be a 1 or a 0"
+	log("The servestaticfiles value in config.conf should be a 1 or a 0")
 try:
 	listdirectories = bool(int(config.get("server","listdirectories")))
 except:
-	print "The listdirectories value in config.conf should be a 1 or a 0"
+	log("The listdirectories value in config.conf should be a 1 or a 0")
+logfile = config.get("server","logfile")
+logfileobject = open(logfile,'w')
 class error404:
 	def __init__(self):
 		pass
@@ -119,7 +126,7 @@ def serverError(start_response,status,filename=""):
 		start_response("403 Permission denied", [('Content-type','text/html')])
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
-		print "You dun fucked up"
+		log("You dun fucked up")
 		sys.exit(1)
 def serve(environ, start_response):
 	# serves requests using the WSGI callable interface.
@@ -195,7 +202,7 @@ def getfield(f):
 if __name__ == '__main__':
 	import wsgiref.simple_server
 	server = wsgiref.simple_server.make_server('', port, serve)
-	print "Server listening on port %d" % port
+	log("Server listening on port %d" % port)
 	server.serve_forever()
 
 
