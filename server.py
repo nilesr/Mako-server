@@ -89,7 +89,7 @@ if killkillKILL:
 			try:
 				os.kill(otherpid,9)
 			except OSError:
-				log("Either the other process has ended, or I don't have permission to kill it.")
+				#log("Either the other process has ended, or I don't have permission to kill it.")
 				pass
 		except:
 			pass
@@ -113,11 +113,6 @@ try:
 except:
 	log("The listdirectories value in config.conf should be a 1 or a 0")
 logfile = config.get("server","logfile")
-class error404:
-	def __init__(self):
-		pass
-	def __str__(self):
-		pass
 lookup = TemplateLookup(directories=[root], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules')
 def serverError(start_response,status,filename=""):
 	if status == 500:
@@ -181,7 +176,7 @@ def serve(environ, start_response):
 	else:
 		try:
 			if not os.path.exists(filename):
-				raise error404()
+				return serverError(start_response,404,uri)
 			if servestaticfiles == True:
 				mime = mimetypes.guess_type(filename)[0]
 				if not mime:
@@ -192,12 +187,10 @@ def serve(environ, start_response):
 				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("no.static.pyhtml").render(filename=uri,config=config)
 				start_response("200 OK", [('Content-type','text/html')])
 				return rendered
-		except error404:
-			return serverError(start_response,404,uri)
 		except:
 			return serverError(start_response,500,uri)
 def getfield(f):
-	"""convert values from cgi.Field objects to plain values."""
+	# convert values from cgi.Field objects to plain values.
 	if isinstance(f, list):
 		return [getfield(x) for x in f]
 	else:
