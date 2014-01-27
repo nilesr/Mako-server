@@ -128,6 +128,7 @@ def serverError(start_response,status,filename=""):
 		log("You dun fucked up")
 		sys.exit(1)
 def serve(environ, start_response):
+	log(environ['REMOTE_ADDR'] + " " + environ['REQUEST_METHOD'] + " " + environ['PATH_INFO'] + " " + environ['HTTP_USER_AGENT'])
 	# serves requests using the WSGI callable interface.
 	fieldstorage = cgi.FieldStorage(
 			fp = environ['wsgi.input'],
@@ -199,7 +200,7 @@ def getfield(f):
 if __name__ == '__main__':
 	import wsgiref.simple_server
 	server = wsgiref.simple_server.make_server('', port, serve)
-	log("Server listening on port %d" % port)
+	log("Server listening on port " + str(port))
 	server.serve_forever()
 
 
