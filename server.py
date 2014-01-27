@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python -O
 import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess, glob, signal
 from mako.lookup import TemplateLookup
 from mako import exceptions
@@ -29,7 +29,7 @@ if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with 
 		sys.exit(subprocess.call(listofarguments))
 	except:
 		sys.exit(1)
-pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])
+pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
 
 nextarg=""
 for argument in sys.argv:
