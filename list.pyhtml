@@ -45,7 +45,6 @@ This is a directory listing
 </tr>
 </thead>
 <tbody>
-${}
 <tr><td><a href="${filename[len(config.get("server","root"))-1:-13-(len(re.split('\/',filename[0:-12])[-2]))]}">Parent Directory</a>/</td><td>${datetime.datetime.strptime(time.ctime(os.path.getmtime(filename[0:-12]+"/..")),"%a %b %d %H:%M:%S %Y").strftime("%Y-%b-%d %H:%M:%S")}</td><td class="s">- &nbsp;</td><td>Directory</td>
 % for fileString in fArray:
 <tr>
