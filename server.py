@@ -1,5 +1,8 @@
 #!/usr/bin/env python -O
-import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess, glob, signal, time
+import sys
+sys.path.append("/usr/local/lib/python2.7/site-packages/")
+import re, os, mimetypes, ConfigParser, mimetypes, subprocess, glob, signal, time
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 from mako.lookup import TemplateLookup
 from mako import exceptions
 mimetypes.init()
@@ -114,17 +117,17 @@ class error404:
 		pass
 	def __str__(self):
 		pass
-lookup = TemplateLookup(directories=[root], filesystem_checks=True, module_directory='./modules')
+lookup = TemplateLookup(directories=[root], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules')
 def serverError(start_response,status,filename=""):
 	if status == 500:
 		start_response("500 Internal Server Error", [('Content-type','text/html')])
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-500.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("error-500.pyhtml").render(filename=filename,config=config)
 	elif status == 404:
 		start_response("404 Not found", [('Content-type','text/html')])
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-404.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("error-404.pyhtml").render(filename=filename,config=config)
 	elif status == 403:
 		start_response("403 Permission denied", [('Content-type','text/html')])
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("error-403.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
 		log("You dun fucked up")
 		sys.exit(1)
@@ -154,7 +157,7 @@ def serve(environ, start_response):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("list.pyhtml").render(filename=filename,config=config)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("list.pyhtml").render(filename=filename,config=config)
 					# Note that all other templates get filename=uri and this gets filename=filename. This is because this file needs to check the date modified and other elements of the file in question, which requires an absolute path. It could be added as filename = config.get("server","root") + uri, but I already have this set up.
 					start_response("200 OK", [('Content-type','text/html')])
 					return rendered
@@ -185,7 +188,7 @@ def serve(environ, start_response):
 				start_response("200 OK", [('Content-type',mime)])
 				return [file(filename).read()]			
 			else:
-				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("no.static.pyhtml").render(filename=uri,config=config)
+				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("no.static.pyhtml").render(filename=uri,config=config)
 				start_response("200 OK", [('Content-type','text/html')])
 				return rendered
 		except error404:
