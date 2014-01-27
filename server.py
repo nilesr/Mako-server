@@ -1,12 +1,23 @@
 #!/usr/bin/python
-import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess
+import cgi, re, os, posixpath, mimetypes, sys, ConfigParser, mimetypes, subprocess, glob, signal
 from mako.lookup import TemplateLookup
 from mako import exceptions
 mimetypes.init()
 config = ConfigParser.SafeConfigParser()
-config.read("config.conf")
+configfile = "config.conf"
+def signaled(sihipsterm, stack):
+	print "Caught signal " + str(sihipsterm) + ", exiting."
+	global pidfile
+	os.remove(pidfile)
+	sys.exit(0)
+for i in [2,3,6,15]:
+	try:
+		#sihipsterm = getattr(signal,i)
+		signal.signal(i,signaled)
+	except RuntimeError,m:
+		pass
 
-if __debug__:
+if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
 	print "Restarting with -O"
 	listofarguments = ["/usr/bin/env", "python", "-O"]
 	for argument in sys.argv:
@@ -16,9 +27,53 @@ if __debug__:
 	listofarguments.append(__file__)
 	print "Calling " + " ".join(listofarguments)
 	sys.exit(subprocess.call(listofarguments))
-	
-	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
+pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
 
+nextarg=""
+for argument in sys.argv:
+	if nextarg == "pidfile":
+		os.remove(pidfile)
+		pidfile = argument
+		nextarg=""
+		continue
+	if nextarg == "config":
+		configfile = argument
+		nextarg=""
+		continue
+#	if argument == "-d" or argument.lower() == "--daemon":
+#		daemonize = True
+#		continue
+	if argument == "-P" or argument.lower() == "--pidfile":
+		nextarg = "pidfile"
+		continue
+	if argument == "-c" or argument.lower() == "--config-file":
+		nextarg = "config"
+		continue
+config.read(configfile)
+for otherpidfile in glob.glob("/tmp/mako.*"):
+	if otherpidfile == pidfile:
+		continue
+	otherpidfileobject = open(otherpidfile,'r')
+	try:
+		otherpid = int(otherpidfileobject.read())
+	except:
+		pass
+	try:
+		os.kill(otherpid,3)
+	except OSError:
+		try:
+			os.kill(otherpid,9)
+		except OSError:
+			print "Either the other process has ended, or I don't have permission to kill it."
+			pass
+	except:
+		print "This case has not been tested. Proceed at your own caution."
+	otherpidfileobject.close()
+	os.remove(otherpidfile)
+	
+pidfileobject = open(pidfile,'w')
+pidfileobject.write(str(os.getpid()))
+pidfileobject.close()
 root = config.get("server","root")
 try:
 	port = int(config.get("server","port"))
