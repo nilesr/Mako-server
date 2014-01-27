@@ -7,7 +7,6 @@ config = ConfigParser.SafeConfigParser()
 configfile = "config.conf"
 def signaled(sihipsterm, stack):
 	print "Caught signal " + str(sihipsterm) + ", exiting."
-	global pidfile
 	os.remove(pidfile)
 	sys.exit(0)
 for i in [2,3,6,15]:
@@ -26,8 +25,11 @@ if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with 
 		listofarguments.append(argument)
 	listofarguments.append(__file__)
 	print "Calling " + " ".join(listofarguments)
-	sys.exit(subprocess.call(listofarguments))
-pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
+	try:
+		sys.exit(subprocess.call(listofarguments))
+	except:
+		sys.exit(1)
+pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])
 
 nextarg=""
 for argument in sys.argv:
@@ -67,7 +69,7 @@ for otherpidfile in glob.glob("/tmp/mako.*"):
 			print "Either the other process has ended, or I don't have permission to kill it."
 			pass
 	except:
-		print "This case has not been tested. Proceed at your own caution."
+		pass
 	otherpidfileobject.close()
 	os.remove(otherpidfile)
 	
