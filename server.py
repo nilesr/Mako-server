@@ -52,7 +52,9 @@ def serverError(start_response,status,filename=""):
 	else:
 		print "You dun fucked up"
 		sys.exit(1)
-
+def returnValue(value):
+	return value
+		
 def serve(environ, start_response):
 	# serves requests using the WSGI callable interface.
 	fieldstorage = cgi.FieldStorage(
@@ -78,15 +80,23 @@ def serve(environ, start_response):
 		uri = uri + "index.pyhtml"
 		if not os.path.exists(filename):
 			if listdirectories:
-				start_response("200 OK", [('Content-type','text/html')])
-				return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("list.pyhtml").render(filename=filename,config=config)
+				try:
+					start_response("200 OK", [('Content-type','text/html')])
+					return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory='./modules').get_template("list.pyhtml").render(filename=filename,config=config)
+				except OSError:
+					return serverError(start_response,403,uri)
+				except:
+					return serverError(start_response,500)
 			else:
 				return serverError(start_response,403,uri)
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			template = lookup.get_template(uri)
-			start_response("200 OK", [('Content-type','text/html')])
-			return [template.render(**d)]
+			if returnValue([template.render(**d)]):
+				start_response("200 OK", [('Content-type','text/html')])
+				return [template.render(**d)]
+			else:
+				return serverError(start_response,500,uri)
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
 			return serverError(start_response,404,uri)
 		except:
