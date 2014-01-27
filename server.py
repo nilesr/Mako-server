@@ -7,7 +7,10 @@ config = ConfigParser.SafeConfigParser()
 configfile = "config.conf"
 def signaled(sihipsterm, stack):
 	print "Caught signal " + str(sihipsterm) + ", exiting."
-	os.remove(pidfile)
+	try:
+		os.remove(pidfile)
+	except OSError:
+		print "Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place"
 	sys.exit(0)
 for i in [2,3,6,15]:
 	try:
@@ -30,9 +33,12 @@ if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with 
 	except:
 		sys.exit(1)
 pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
-
 nextarg=""
+killkillKILL = True
 for argument in sys.argv:
+	if argument == "-h" or argument.lower() == "--help":
+		print "Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--supress-urge-to-kill]"
+		sys.exit(0)
 	if nextarg == "pidfile":
 		os.remove(pidfile)
 		pidfile = argument
@@ -51,28 +57,34 @@ for argument in sys.argv:
 	if argument == "-c" or argument.lower() == "--config-file":
 		nextarg = "config"
 		continue
-config.read(configfile)
-for otherpidfile in glob.glob("/tmp/mako.*"):
-	if otherpidfile == pidfile:
-		continue
-	otherpidfileobject = open(otherpidfile,'r')
-	try:
-		otherpid = int(otherpidfileobject.read())
-	except:
-		pass
-	try:
-		os.kill(otherpid,3)
-	except OSError:
+	if argument.lower() == "--supress-urge-to-kill":
+		killkillKILL = False
+try:
+	config.readfp(open(configfile))
+except:
+	print "Config file read failure"
+	sys.exit(1)
+if killkillKILL:
+	for otherpidfile in glob.glob("/tmp/mako.*"):
+		if otherpidfile == pidfile:
+			continue
+		otherpidfileobject = open(otherpidfile,'r')
 		try:
-			os.kill(otherpid,9)
-		except OSError:
-			print "Either the other process has ended, or I don't have permission to kill it."
+			otherpid = int(otherpidfileobject.read())
+		except:
 			pass
-	except:
-		pass
-	otherpidfileobject.close()
-	os.remove(otherpidfile)
-	
+		try:
+			os.kill(otherpid,3)
+		except OSError:
+			try:
+				os.kill(otherpid,9)
+			except OSError:
+				print "Either the other process has ended, or I don't have permission to kill it."
+				pass
+		except:
+			pass
+		otherpidfileobject.close()
+		os.remove(otherpidfile)
 pidfileobject = open(pidfile,'w')
 pidfileobject.write(str(os.getpid()))
 pidfileobject.close()
