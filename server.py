@@ -1,14 +1,14 @@
 #!/usr/bin/env python -O
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
-import re, os, mimetypes, ConfigParser, mimetypes, subprocess, glob, signal, time
+import cgi, re, os, mimetypes, ConfigParser, mimetypes, subprocess, glob, signal, time
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 from mako.lookup import TemplateLookup
 from mako import exceptions
 mimetypes.init()
 config = ConfigParser.SafeConfigParser()
 configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
-logfileobject = False
+logfile = False
 def log(missive):
 	if logfile:
 		logfileobject = open(logfile,'w')
@@ -158,7 +158,7 @@ def serve(environ, start_response):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("list.pyhtml").render(filename=filename,config=config)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("list.pyhtml").render(filename=filename,config=config,d=d)
 					# Note that all other templates get filename=uri and this gets filename=filename. This is because this file needs to check the date modified and other elements of the file in question, which requires an absolute path. It could be added as filename = config.get("server","root") + uri, but I already have this set up.
 					start_response("200 OK", [('Content-type','text/html')])
 					return rendered
@@ -171,7 +171,7 @@ def serve(environ, start_response):
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			template = lookup.get_template(uri)
-			rendered = [template.render(**d)]
+			rendered = [template.render(d=d,uri=uri)]
 			start_response("200 OK", [('Content-type','text/html')])
 			return rendered
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
