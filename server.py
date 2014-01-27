@@ -154,7 +154,7 @@ def serve(environ, start_response):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("list.pyhtml").render(filename=filename,config=config,d=d)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/modules').get_template("list.pyhtml").render(filename=filename,config=config,d=d,uri=uri)
 					# Note that all other templates get filename=uri and this gets filename=filename. This is because this file needs to check the date modified and other elements of the file in question, which requires an absolute path. It could be added as filename = config.get("server","root") + uri, but I already have this set up.
 					start_response("200 OK", [('Content-type','text/html')])
 					return rendered
