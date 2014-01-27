@@ -37,7 +37,7 @@ nextarg=""
 killkillKILL = True
 for argument in sys.argv:
 	if argument == "-h" or argument.lower() == "--help":
-		print "Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--supress-urge-to-kill]"
+		print "Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--suppress-urge-to-kill]"
 		sys.exit(0)
 	if nextarg == "pidfile":
 		os.remove(pidfile)
@@ -57,7 +57,7 @@ for argument in sys.argv:
 	if argument == "-c" or argument.lower() == "--config-file":
 		nextarg = "config"
 		continue
-	if argument.lower() == "--supress-urge-to-kill":
+	if argument.lower() == "--suppress-urge-to-kill":
 		killkillKILL = False
 try:
 	config.readfp(open(configfile))
