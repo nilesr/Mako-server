@@ -5,7 +5,7 @@ if __name__ == '__main__':
 def onLoad(**kargs):
 	try:
 		global sets
-		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions contains a dynamic number of lists, each with two values, an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
+		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
 		for set in kargs["config"].get("mod_rewrite","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
 				sets[set] = dict()
