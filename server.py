@@ -22,8 +22,9 @@ def serverError(start_response,status,filename=""):
 		start_response("500 Internal Server Error", [('Content-type','text/html')])
 		return "You fucked something up yo"
 def serve(environ, start_response):
+	new_environ = environ
 	for module in moduleObjects:
-		returnvalue = module.onRequest(start_response=start_response,environ=environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
+		returnvalue, new_environ = module.onRequest(start_response=start_response,environ=new_environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 		if returnvalue:
 			return returnvalue
 	start_response("500 Internal Server Error", [('Content-type','text/text')])
@@ -146,14 +147,6 @@ if __name__ == '__main__':
 	except ValueError:
 		log("The port in config.conf must be an integer")
 		sys.exit(1)
-	try:
-		servestaticfiles = bool(int(config.get("server","servestaticfiles")))
-	except:
-		log("The servestaticfiles value in config.conf should be a 1 or a 0")
-	try:
-		listdirectories = bool(int(config.get("server","listdirectories")))
-	except:
-		log("The listdirectories value in config.conf should be a 1 or a 0")
 	logfile = config.get("server","logfile")
 	import wsgiref.simple_server
 	server = wsgiref.simple_server.make_server('', port, serve)

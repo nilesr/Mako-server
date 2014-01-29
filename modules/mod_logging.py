@@ -21,4 +21,4 @@ def onRequest(**kargs):
 		kargs['log'](result[0:-1])
 	except:
 		kargs['log']("There is a problem in the mod_logging configuration")
-	return False
+	return False, kargs['environ']

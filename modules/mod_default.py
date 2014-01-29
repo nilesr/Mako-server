@@ -33,26 +33,26 @@ def onRequest(**kargs):
 				try:
 					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("list.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
 					kargs["start_response"]("200 OK", [('Content-type','text/html')])
-					return rendered
+					return rendered, kargs['environ']
 				except OSError:
-					return kargs["serverError"](kargs["start_response"],403,uri)
+					return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
 				except:
-					return kargs["serverError"](kargs["start_response"],500)
+					return kargs["serverError"](kargs["start_response"],500), kargs['environ']
 			else:
-				return kargs["serverError"](kargs["start_response"],403,uri)
+				return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template(uri).render(d=d,uri=uri)
 			kargs["start_response"]("200 OK", [('Content-type','text/html')])
-			return rendered
+			return rendered, kargs['environ']
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
-			return kargs["serverError"](kargs["start_response"],404,uri)
+			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 		except:
-			return kargs["serverError"](kargs["start_response"],500)
+			return kargs["serverError"](kargs["start_response"],500), kargs['environ']
 	else:
 		try:
 			if not os.path.exists(filename):
-				return kargs["serverError"](kargs["start_response"],404,uri)
+				return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 			if servestaticfiles == True:
 				mime = mimetypes.guess_type(filename)[0]
 				if not mime:
@@ -60,15 +60,15 @@ def onRequest(**kargs):
 				try:
 					rendered = file(filename).read()
 				except:
-					return kargs["serverError"](kargs["start_response"],403,uri)
+					return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
 				kargs["start_response"]("200 OK", [('Content-type',mime)])
 				if not rendered:
-					return "File is empty"
+					return "File is empty", kargs['environ']
 				else:
-					return rendered
+					return rendered, kargs['environ']
 			else:
 				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("no.static.pyhtml").render(filename=uri,config=config)
 				kargs["start_response"]("200 OK", [('Content-type','text/html')])
-				return rendered
+				return rendered, kargs['environ']
 		except:
-			return kargs["serverError"](kargs["start_response"],500,uri)
+			return kargs["serverError"](kargs["start_response"],500,uri), kargs['environ']

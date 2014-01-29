@@ -1,4 +1,4 @@
-import sys,os,re,traceback
+import sys,os,re
 if __name__ == '__main__':
 	print "Do not invoke this directly"
 	sys.exit(1)
@@ -21,4 +21,4 @@ def onRequest(**kargs):
 	for set in sets:
 		if re.match(set[0],kargs['environ']['HTTP_HOST']):
 			return mod_default.onRequest(root=set[1],start_response=kargs['start_response'],environ=kargs['environ'],log=kargs['log'],logfile=kargs['logfile'],serverError=kargs['serverError'],config=kargs['config'],file=kargs['file'],getfield=kargs['getfield'])
-	return False
+	return False, kargs['environ']
