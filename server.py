@@ -26,6 +26,8 @@ def serve(environ, start_response):
 		returnvalue = module.onRequest(start_response=start_response,environ=environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 		if returnvalue:
 			return returnvalue
+	start_response("500 Internal Server Error", [('Content-type','text/text')])
+	return "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')
 		
 def getfield(f):
 	# convert values from cgi.Field objects to plain values.
@@ -60,6 +62,7 @@ if __name__ == '__main__':
 			os.remove(pidfile)
 		except OSError:
 			log("Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
+			sys.exit(1)
 		sys.exit(0)
 	for i in [2,3,6,15]:
 		try:

@@ -6,8 +6,8 @@ if __name__ == '__main__':
 	sys.exit(1)
 def onLoad(**kargs):
 	global listdirectories, servestaticfiles
-	listdirectories = bool(int(kargs["config"].get("server","listdirectories")))
-	servestaticfiles = bool(int(kargs["config"].get("server","servestaticfiles")))
+	listdirectories = bool(int(kargs["config"].get("mod_default","listdirectories")))
+	servestaticfiles = bool(int(kargs["config"].get("mod_default","servestaticfiles")))
 	kargs['log']("Default case module loaded")
 def onRequest(**kargs):
 	fieldstorage = cgi.FieldStorage(
