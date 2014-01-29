@@ -46,9 +46,6 @@ def onRequest(**kargs):
 			kargs["start_response"]("200 OK", [('Content-type','text/html')])
 			return rendered
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
-			print "root: " + kargs["root"]
-			print "temp: " + os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files'
-			print "uri: " + uri
 			return kargs["serverError"](kargs["start_response"],404,uri)
 		except:
 			return kargs["serverError"](kargs["start_response"],500)
