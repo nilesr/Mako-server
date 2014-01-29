@@ -10,7 +10,7 @@ import cgi
 <h2>404 error</h2>
 <div id="content">
 <h3>The file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(filename)}</span> could not be found</h3>
-Please report a broken link to whoever led you here, or if you think this page should exist, report it to the owner <a href="mailto:${cgi.escape(config.get("ownerinfo","email"))}">here</a>
+Please report a broken link to whoever led you here, or if you think this page should exist, report it to the owner <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>
 </div>
 </body>
 </html>

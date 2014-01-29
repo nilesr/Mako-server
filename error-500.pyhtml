@@ -10,7 +10,7 @@ import cgi
 <h2>500 error</h2>
 <div id="content">
 <h3>The server encountered an error processing your request</h3>
-Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("ownerinfo","email"))}">here</a>
+Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>
 </div>
 </body>
 </html>
