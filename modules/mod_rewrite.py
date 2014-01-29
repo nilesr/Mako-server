@@ -2,9 +2,18 @@ import sys,os,re,ConfigParser
 if __name__ == '__main__':
 	print "Do not invoke this directly"
 	sys.exit(1)
+#**
+#* Loads the relevant configuration options, and logs a message
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
+#* @returns			bool true
 def onLoad(**kargs):
 	try:
 		global sets
+		#**
+		#* "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
 		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
 		for set in kargs["config"].get("mod_rewrite","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
@@ -22,6 +31,13 @@ def onLoad(**kargs):
 		kargs['log']("Your vhost settings are incorrect")
 		sys.exit(1)
 	kargs['log']("Simple vhost module loaded")
+#**
+#* For each set, loop through each condition to see if that set applies. If it does, execute the regular expression on the PATH_INFO environment variable and log a message
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
+#* @returns			bool false, dictionary environment
 def onRequest(**kargs):
 	for set in sets:
 		apply = True

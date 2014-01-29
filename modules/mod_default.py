@@ -10,7 +10,7 @@ if __name__ == '__main__':
 #* @version			devel/unreleased
 #* @since			2013-01-29
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
-#* @returns			True
+#* @returns			bool true
 def onLoad(**kargs):
 	global listdirectories, servestaticfiles
 	listdirectories = bool(int(kargs["config"].get("mod_default","listdirectories")))
@@ -22,7 +22,7 @@ def onLoad(**kargs):
 #* @version			devel/unreleased
 #* @since			2013-01-29
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
-#* @returns			A rendered mako file, or a static file, or a directory listing, or a 404 error, or a 403, or a 500 error
+#* @returns			string a rendered mako file or a static file or a directory listing or a 404 error or a 403 or a 500 error, dictionary environment
 def onRequest(**kargs):
 	#**
 	#* I have no idea what this does
@@ -43,6 +43,9 @@ def onRequest(**kargs):
 	#**
 	#* This sets filename to the local file where we are serving the file from
 	filename = kargs["root"] + u
+	#**
+	#* If it's a directory, append /index.pyhtml to it
+	#* Then, attempt to serve the file. If it doesn't exist, check the config file to see if we support directory listings. Depending on that value, either render and return a list of files and directories in said directory, or render and return a 403 error
 	if os.path.isdir(filename):
 		if not filename[-1] == '/':
 			filename = filename + "/"
@@ -62,6 +65,8 @@ def onRequest(**kargs):
 					return kargs["serverError"](kargs["start_response"],500), kargs['environ']
 			else:
 				return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
+	#**
+	#* If the uri ends with .pyhtml, attempt to serve the file using mako
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
 			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template(uri).render(d=d,uri=uri)
@@ -71,6 +76,8 @@ def onRequest(**kargs):
 			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 		except:
 			return kargs["serverError"](kargs["start_response"],500), kargs['environ']
+	#**
+	#* Otherwise, check our configuration to see if we will serve static files, and either send the file, send a file is empty warning, or send a message saying we do not serve static files
 	else:
 		try:
 			if not os.path.exists(filename):
