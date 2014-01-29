@@ -5,5 +5,5 @@ if __name__ == '__main__':
 def onLoad(**kargs):
 	print "Worst case scenario module loaded"
 def onRequest(**kargs):
-	#set headers to 500
+	kargs["start_response"]("500 Nothing executed", [('Content-type','text/html')])
 	return TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("error-no-module.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
