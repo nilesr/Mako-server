@@ -70,51 +70,76 @@ def serve(environ, start_response):
 	except:
 		pass
 	return "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')
-		
+#**
+#* Gets the entry for a field from a POST or GET form request
+#* <p>
+#* I'm not going to lie, I have no idea how or why this works
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			list f
+#* @returns			A string equal to the value of the field specified (f)
 def getfield(f):
-	# convert values from cgi.Field objects to plain values.
 	if isinstance(f, list):
 		return [getfield(x) for x in f]
 	else:
 		return f.value
 
 if __name__ == '__main__':
+	#**
+	#* Makes the directories for temporary files and modules, if they don't exist.
 	if not os.path.isdir(os.path.dirname(os.path.realpath(__file__))+'/temporary_files'):
 		try:
 			os.makedirs(os.path.dirname(os.path.realpath(__file__))+'/temporary_files')
 		except:
-			log("Failed to create temporary_files directory")
+			log("Fatal error: Failed to create temporary_files directory")
 			sys.exit(1)
 	if not os.path.isdir(os.path.dirname(os.path.realpath(__file__))+'/modules'):
 		try:
 			os.makedirs(os.path.dirname(os.path.realpath(__file__))+'/modules')
 		except:
-			log("Failed to create modules directory")
+			log("Fatal error: Failed to create modules directory")
 			sys.exit(1)
 	from mako.lookup import TemplateLookup
 	from mako import exceptions
 	os.chdir(os.path.dirname(os.path.realpath(__file__)))
 	mimetypes.init()
+	#**
+	#* Reads the configuration file.
 	config = ConfigParser.SafeConfigParser()
-	configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
+#	configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
 	logfile = False
+	#**
+	#* Gets called when the program recieves a 2, 3, 6 or 15 signal from the system
+	#* <p>
+	#* Attempts to log that the program is exiting, then delete the PID file.
+	#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+	#* @version			devel/unreleased
+	#* @since			2013-01-29
+	#* @params			int signum, unknown stack
+	#* @returns			True
 	def signaled(sihipsterm, stack):
-		log("Caught signal " + str(sihipsterm) + ", exiting.")
+		log("Fatal info: Caught signal " + str(sihipsterm) + ", exiting.")
 		try:
 			os.remove(pidfile)
 		except OSError:
-			log("Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
+			log("Fatal error: Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
 			sys.exit(1)
 		sys.exit(0)
+	#**
+	#* Registers signal handlers for the singals 2, 3, 6 and 15
+	#* @see				mako-server.server.signaled, signal
 	for i in [2,3,6,15]:
 		try:
 			#sihipsterm = getattr(signal,i)
 			signal.signal(i,signaled)
 		except RuntimeError,m:
 			pass
-
-	if __debug__:	# Alright, I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
-		log("Restarting with -O")
+	#**
+	#* I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
+	#* -O runs optimizations, by the way
+	if __debug__:	
+		log("Nonfatal warning: Restarting with -O")
 		listofarguments = ["/usr/bin/env", "python", "-O"]
 		for argument in sys.argv:
 			if argument == __file__:
@@ -126,14 +151,23 @@ if __name__ == '__main__':
 			sys.exit(subprocess.call(listofarguments))
 		except:
 			sys.exit(1)
+	#**
+	#* Makes a random pid file.
 	pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
+	#**
+	#* Sets some defaults, before parsing arguments
 	nextarg=""
 	killkillKILL = True
-	for argument in sys.argv:
+	configfile=os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
+	#**
+	#* Parses each argument. Daemonization support is planned, but not implemented.
+	for argument in sys.argv[1:]:
 		if argument == "-h" or argument.lower() == "--help":
-			log("Usage: ./server.py [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--suppress-urge-to-kill]")
+			log("Usage: "+sys.argv[0]+" [-h|--help] [<--pidfile|-P> <pidfile>] [<--config-file|-c> <config.conf>] [--suppress-urge-to-kill]")
 			sys.exit(0)
 		if nextarg == "pidfile":
+			#**
+			#* Removes the old, randomly created PID file and uses the last one passed in an argument.
 			os.remove(pidfile)
 			pidfile = argument
 			nextarg=""
@@ -153,11 +187,17 @@ if __name__ == '__main__':
 			continue
 		if argument.lower() == "--suppress-urge-to-kill":
 			killkillKILL = False
+			continue
+		log("Nonfatal warning. Argument: " +argument + " is not recoginized, ignoring.")
+	#**
+	#* Attempts to read the config file.
 	try:
 		config.readfp(open(configfile))
 	except:
-		log("Config file read failure")
+		log("Fatal error: Config file read failure")
 		sys.exit(1)
+	#**
+	#* Attempts to kill all other mako servers, unless the "--suppress-urge-to-kill" argument was passed.
 	if killkillKILL:
 		for otherpidfile in glob.glob("/tmp/mako.*"):
 			if otherpidfile == pidfile:
@@ -179,26 +219,39 @@ if __name__ == '__main__':
 				pass
 			otherpidfileobject.close()
 			os.remove(otherpidfile)
-	pidfileobject = open(pidfile,'w')
-	pidfileobject.write(str(os.getpid()))
-	pidfileobject.close()
+	#**
+	#* Attempts to write the process ID to the pid file
+	try:
+		pidfileobject = open(pidfile,'w')
+		pidfileobject.write(str(os.getpid()))
+		pidfileobject.close()
+	except:
+		log("Nonfatal warning: could not write to PID file " + pidfile)
+	#**
+	#* Reads some global variables from the config file.
 	root = config.get("server","root")
 	try:
 		port = int(config.get("server","port"))
 	except ValueError:
-		log("The port in config.conf must be an integer")
+		log("Fatal error: The port in config.conf must be an integer")
 		sys.exit(1)
 	logfile = config.get("server","logfile")
+	#**
+	#* Here, we actually start the server
 	import wsgiref.simple_server
 	server = wsgiref.simple_server.make_server('', port, serve)
-	for file in glob.glob(os.path.dirname(os.path.realpath(__file__))+'/modules/*.pyo'):
-		os.remove(file)
+	#**
+	#* Imports every module in the config file.
 	modules = config.get("server","modules").split(config.get("general","listDelimiter"))
 	sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/modules')
-	moduleObjects = map(__import__, modules)
+	try:
+		moduleObjects = map(__import__, modules)
+	except:
+		log("Fatal error: One or more modules failed to import. Please check your config file, and each module file")
+		sys.exit(1)
 	for module in moduleObjects:
 		module.onLoad(log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
-	log("Server listening on port " + str(port))
+	log("Info: Server listening on port " + str(port))
 	server.serve_forever()
 
 
