@@ -4,22 +4,44 @@ from mako import exceptions
 if __name__ == '__main__':
 	print "Do not invoke this directly"#you dumb shit
 	sys.exit(1)
+#**
+#* Loads the relevant configuration options, and logs a message
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
+#* @returns			True
 def onLoad(**kargs):
 	global listdirectories, servestaticfiles
 	listdirectories = bool(int(kargs["config"].get("mod_default","listdirectories")))
 	servestaticfiles = bool(int(kargs["config"].get("mod_default","servestaticfiles")))
 	kargs['log']("Default case module loaded")
+#**
+#* Attempts to serve a rendered mako file, or a static file, or a directory listing, or a 404 error, or a 403, or a 500 error
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
+#* @returns			A rendered mako file, or a static file, or a directory listing, or a 404 error, or a 403, or a 500 error
 def onRequest(**kargs):
+	#**
+	#* I have no idea what this does
 	fieldstorage = cgi.FieldStorage(
 			fp = kargs["environ"]['wsgi.input'],
 			environ = kargs['environ'],
 			keep_blank_values = True
 	)
+	#**
+	#* This sets d to the GET/POST headers
 	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
+	#**
+	#* This sets URI to something like "/" or "/index.pyhtml" or "/directory/specific_file.pyhtml"
 	uri = kargs["environ"].get('PATH_INFO', '/')
 	if not uri:
 		uri = '/'
 	u = re.sub(r'^\/+', '', uri)
+	#**
+	#* This sets filename to the local file where we are serving the file from
 	filename = kargs["root"] + u
 	if os.path.isdir(filename):
 		if not filename[-1] == '/':
