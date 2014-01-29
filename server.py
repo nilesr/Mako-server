@@ -19,8 +19,8 @@ def serverError(start_response,status,filename=""):
 		start_response("403 Permission denied", [('Content-type','text/html')])
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
-		log("You dun fucked up")
-		sys.exit(1)
+		start_response("500 Internal Server Error", [('Content-type','text/html')])
+		return "You fucked something up yo"
 def serve(environ, start_response):
 	for module in moduleObjects:
 		returnvalue = module.onRequest(start_response=start_response,environ=environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
