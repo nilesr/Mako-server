@@ -12,10 +12,11 @@ def onLoad(**kargs):
 def onRequest(**kargs):
 	fieldstorage = cgi.FieldStorage(
 			fp = kargs["environ"]['wsgi.input'],
-			#environ = environ,
+			environ = kargs['environ'],
 			keep_blank_values = True
 	)
-	d = dict([(k, getfield(fieldstorage[k])) for k in fieldstorage])
+	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
+	print d
 
 	uri = kargs["environ"].get('PATH_INFO', '/')
 	if not uri:

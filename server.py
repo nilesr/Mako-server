@@ -23,7 +23,7 @@ def serverError(start_response,status,filename=""):
 		sys.exit(1)
 def serve(environ, start_response):
 	for module in moduleObjects:
-		returnvalue = module.onRequest(start_response=start_response,environ=environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__)
+		returnvalue = module.onRequest(start_response=start_response,environ=environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 		if returnvalue:
 			return returnvalue
 		
