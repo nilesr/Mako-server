@@ -2,32 +2,73 @@
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
 import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time
+#**
+#* Logs a message, to both stdout and a logfile, if applicable
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			missive 
+#* @returns			True
 def log(missive):
 	if logfile:
-		logfileobject = open(logfile,'w')
-		logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
-		logfileobject.close()
+		try:
+			logfileobject = open(logfile,'w')
+			logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
+			logfileobject.close()
+		except OSError:
+			print "Error opening logfile. Non-fatal"
 	print sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive
+#**
+#* Sends an error message to the client
+#* <p>
+#* Uses the start_response to set headers. If the headers are already set, it just returns the rendered error file. Note that the "filename" parameter is refered to as "uri" in most of the rest of the program.
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			function start_response, int status, optional str filename
+#* @returns			A string equal to the rendered view of a mako template, which is then in theory sent to the client
 def serverError(start_response,status,filename=""):
 	if status == 500:
-		start_response("500 Internal Server Error", [('Content-type','text/html')])
+		try:
+			start_response("500 Internal Server Error", [('Content-type','text/html')])
+		except: # This hapends if the headers were already set by something else
+			pass
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-500.pyhtml").render(filename=filename,config=config)
 	elif status == 404:
-		start_response("404 Not found", [('Content-type','text/html')])
+		try:
+			start_response("404 Not found", [('Content-type','text/html')])
+		except: # This hapends if the headers were already set by something else
+			pass
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-404.pyhtml").render(filename=filename,config=config)
 	elif status == 403:
-		start_response("403 Permission denied", [('Content-type','text/html')])
+		try:
+			start_response("403 Permission denied", [('Content-type','text/html')])
+		except: # This hapends if the headers were already set by something else
+			pass
 		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
-		start_response("500 Internal Server Error", [('Content-type','text/html')])
+		try:
+			start_response("500 Internal Server Error", [('Content-type','text/html')])
+		except: # This hapends if the headers were already set by something else
+			pass
 		return "You fucked something up yo"
+#**
+#* Returns a value that is then sent to the connecting client
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			devel/unreleased
+#* @since			2013-01-29
+#* @params			list environ (environment), function start_response (used to sent headers to the client)
+#* @returns			A string equal to what is sent to the client by the wsgiref server.
 def serve(environ, start_response):
 	new_environ = environ
 	for module in moduleObjects:
 		returnvalue, new_environ = module.onRequest(start_response=start_response,environ=new_environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 		if returnvalue:
 			return returnvalue
-	start_response("500 Internal Server Error", [('Content-type','text/text')])
+	try:
+		start_response("500 Internal Server Error", [('Content-type','text/text')])
+	except:
+		pass
 	return "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')
 		
 def getfield(f):
