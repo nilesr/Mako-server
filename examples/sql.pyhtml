@@ -1,0 +1,54 @@
+<%!
+import sys
+sys.path.append("/usr/local/lib/python2.7/site-packages/")
+import pymysql, cgi, hashlib
+%>
+<!doctype html>
+<html>
+	<head>
+		<title>Sql test</title>
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+		<h2>Login page</h2>
+		<div id="content">
+			<%
+				if 'username' in d and 'username' in d:
+					conn = pymysql.connect(host='127.0.0.1', port=3306, user='readonly', passwd='', db='test')
+					cur = conn.cursor()
+					#text = conn.escape(request[1])
+					result = cur.execute("SELECT Password,Messages FROM users WHERE `Username`='" + d['username'] + "';")
+					correct = False
+					rows = []
+					for row in cur:
+						rows.append(row)
+						if row[0] == hashlib.md5(d['password']).hexdigest():
+							correct = True
+							messages = row[1]
+							break
+					if correct:
+						needstologin = False
+					else:
+						needstologin = True
+				else:
+					needstologin = True
+				try:
+					cur.close()
+					conn.close()
+				except:
+					pass
+			%>
+			% if needstologin:
+			<h3>Please enter your username and password</h3>
+			<form name="input" action="" method="post">
+			Username: <input type="text" name="username"><br>
+			Password: <input type="text" name="password"><br>
+			<input type="submit" value="Submit">
+			</form>
+			% else:
+			<h3>Welcome ${d['username']}!</h3>
+			<div>You have ${messages} new messages!</div>
+			% endif
+		</div>
+	</body>
+</html>
