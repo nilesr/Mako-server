@@ -26,7 +26,6 @@ def onRequest(**kargs):
 	for set in sets:
 		apply = True
 		for condition in sets[set]['conditions']:
-			print condition
 			if condition[0] == "bypass":
 				apply = True
 				continue
@@ -34,6 +33,9 @@ def onRequest(**kargs):
 				apply = False
 				continue
 		if apply:
+			logmessage = set + " is rewriting '" + kargs['environ']['PATH_INFO']
 			kargs['environ']['PATH_INFO'] = re.sub(sets[set]['change'][0],sets[set]['change'][1],kargs['environ']['PATH_INFO'])
+			logmessage += "' to '" + kargs['environ']['PATH_INFO'] + "'"
+			kargs['log'](logmessage)
 	return False, kargs['environ']
 
