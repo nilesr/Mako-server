@@ -1,0 +1,28 @@
+<%
+try:
+	adjective = d['adjective']
+except:
+	adjective = False
+%>
+<!doctype html>
+<html>
+<head>
+<title>Ben is...</title>
+<link rel="stylesheet" href="http://niles.mooo.com/style.css" />
+</head>
+<body>
+<h2>Ben is...</h2>
+<div id="content">
+<h2>Ben is 
+% if adjective:
+${adjective}
+% else:
+<form name="input" action="" method="post">
+<input type="text" name="adjective"><br>
+<input type="submit" value="Submit">
+</form>
+% endif
+</h2>
+</div>
+</body>
+</html>

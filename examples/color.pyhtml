@@ -1,0 +1,35 @@
+<%!
+import random
+%>
+<%
+def newColor():
+	color = str(hex(random.randint(0,255)))[2:]
+	if len(color) < 2:
+		color = "0" + color
+	return color
+def fullColor():
+	try:
+		return d['color']
+	except:
+		return "#" + newColor() + newColor() + newColor()
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Hazel Alder</title>
+<link rel="stylesheet" href="http://niles.mooo.com:4000/style.css">
+</head>
+<body style="background-color:${fullColor()}">
+<h2>Hazel Alder</h2>
+<div id="content">
+<h1 style="color:${fullColor()}">This is running on the mako engine. I'm sure I'll have a use for it sometime</h1>
+<form name="input" action="" method="post">
+New hex color: <input type="text" name="color"><br>
+<input type="submit" value="Submit">
+</form>
+<hr />
+<a href="/ben.pyhtml">Ben is...</a>
+</div>
+<div id="foot">Niles Rogoff 2013</div>
+</body>
+</html>
