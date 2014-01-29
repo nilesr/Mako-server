@@ -9,7 +9,7 @@ import cgi
 <body>
 <h2>Error 500 - No loaded module is equipped to handle this file</h2>
 <div id="content">
-<h3>Error 500 - No loaded module is equipped to handle this file</h3>
+<h3>Error 500 - No loaded module is equipped to handle the file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(uri)}</span></h3>
 Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>.
 </div>
 </body>

@@ -4,8 +4,7 @@ if __name__ == '__main__':
 	sys.exit(1)
 def onLoad(**kargs):
 	try:
-		global order, orderString
-		orderString = kargs['config'].get("mod_logging","order")
+		global order
 		order = kargs['config'].get("mod_logging","order").split(kargs['config'].get("general","listDelimiter"))
 	except:
 		kargs['log']("There is a problem in your mod_logging configuration")

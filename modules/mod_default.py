@@ -18,9 +18,7 @@ def onRequest(**kargs):
 	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
 	uri = kargs["environ"].get('PATH_INFO', '/')
 	if not uri:
-		uri = '/index.pyhtml'
-	else:
-		uri = re.sub(r'^/$', '/index.pyhtml', uri)
+		uri = '/'
 	u = re.sub(r'^\/+', '', uri)
 	filename = kargs["root"] + u
 	if os.path.isdir(filename):
@@ -34,7 +32,6 @@ def onRequest(**kargs):
 			if listdirectories:
 				try:
 					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("list.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
-					# Note that all other templates get filename=uri and this gets filename=filename. This is because this file needs to check the date modified and other elements of the file in question, which requires an absolute path. It could be added as filename = config.get("server","root") + uri, but I already have this set up.
 					kargs["start_response"]("200 OK", [('Content-type','text/html')])
 					return rendered
 				except OSError:
@@ -49,9 +46,11 @@ def onRequest(**kargs):
 			kargs["start_response"]("200 OK", [('Content-type','text/html')])
 			return rendered
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
+			print "root: " + kargs["root"]
+			print "temp: " + os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files'
+			print "uri: " + uri
 			return kargs["serverError"](kargs["start_response"],404,uri)
 		except:
-			print 2
 			return kargs["serverError"](kargs["start_response"],500)
 	else:
 		try:
