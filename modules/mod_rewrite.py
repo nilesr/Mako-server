@@ -5,7 +5,7 @@ if __name__ == '__main__':
 def onLoad(**kargs):
 	try:
 		global sets
-		sets = dict()
+		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions contains a dynamic number of lists, each with two values, an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
 		for set in kargs["config"].get("mod_rewrite","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
 				sets[set] = dict()
@@ -18,13 +18,22 @@ def onLoad(**kargs):
 			except ConfigParser.NoOptionError:
 				continue
 		kargs['log']("mod_rewrite loaded")
-		print sets
 	except:
 		kargs['log']("Your vhost settings are incorrect")
 		sys.exit(1)
 	kargs['log']("Simple vhost module loaded")
 def onRequest(**kargs):
 	for set in sets:
-		pass
+		apply = True
+		for condition in sets[set]['conditions']:
+			print condition
+			if condition[0] == "bypass":
+				apply = True
+				continue
+			if not re.match(condition[1],kargs['environ'][condition[0]]):
+				apply = False
+				continue
+		if apply:
+			kargs['environ']['PATH_INFO'] = re.sub(sets[set]['change'][0],sets[set]['change'][1],kargs['environ']['PATH_INFO'])
 	return False, kargs['environ']
 
