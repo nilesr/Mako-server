@@ -160,7 +160,7 @@ if __name__ == '__main__':
 	sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/modules')
 	moduleObjects = map(__import__, modules)
 	for module in moduleObjects:
-		module.onLoad(config=config)
+		module.onLoad(log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 	log("Server listening on port " + str(port))
 	server.serve_forever()
 

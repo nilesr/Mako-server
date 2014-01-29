@@ -5,7 +5,7 @@ if __name__ == '__main__':
 	print "Do not invoke this directly"#you dumb shit
 	sys.exit(1)
 def onLoad(**kargs):
-	print "Default case module loaded"
+	kargs['log']("Default case module loaded")
 	global listdirectories, servestaticfiles
 	listdirectories = bool(int(kargs["config"].get("server","listdirectories")))
 	servestaticfiles = bool(int(kargs["config"].get("server","servestaticfiles")))
