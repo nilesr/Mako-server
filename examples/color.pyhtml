@@ -17,7 +17,7 @@ def fullColor():
 <html>
 <head>
 <title>Hazel Alder</title>
-<link rel="stylesheet" href="http://niles.mooo.com:4000/style.css">
+<link rel="stylesheet" href="/style.css">
 </head>
 <body style="background-color:${fullColor()}">
 <h2>Hazel Alder</h2>

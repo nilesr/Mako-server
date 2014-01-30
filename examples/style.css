@@ -1,0 +1,97 @@
+/*
+* Niles Rogoff 2013
+* I would like to take this space to recognize the authors of Lighttpd, one of my
+* favourite web servers. It's fast, extremely extendable, and I stole their CSS so I hope
+* this sort of makes up for it
+*
+* I have no affiliation with lighttpd. You can find out more about lighttpd at
+* http://www.lighttpd.net/
+*
+* I would also like to recognize the authors of Apache. At least you tried.
+*
+* I stole my weather from earthshod, who gets it from someone else. Probably
+* weatherunderground. I personally prefer accuweather, but for no real reason.
+*
+* I am stealing my weather using some more stolen code from Ian Weller. Spectacular
+* programmer, probably. I suppose I should also recognize the creators of Cron, python
+* and the mac kernel for making this all possible, except the mac kernel came from a
+* bastardization of BSD and Darwin, the creators of which I suppose deserve some credit
+* as well.
+*
+* On the other hand, according to Wikipedia, the Mac OS X 10.4 kernel had eighty-six
+* million lines of code, while Open BSD clocked in at only eight point eight. This makes
+* no sense to me, because the mac kernel only has to run on like four or five different
+* devices, so you could kill like 90% of the hardware support for things in computers
+* apple doesn't make.
+*
+* Anyways I'm getting a bit tangental, and this will all affect load times on my site, 
+* now that I think about it.
+*/
+body {
+	text-align:left;
+	color:black;
+/*	background-color: #F5F5F5;*/
+	background-color: #a6c5b7;
+}
+p {
+	padding-left:10%;
+	padding-right:10%;
+}
+#small {
+	font-size: 0.5em;
+	color:darkgrey;
+}
+#hide {
+	display:none;
+}
+a, a:active, a:visited {
+	text-decoration: none;
+	color: blue;
+	-webkit-transition: 0.5s ease border, 1s ease border-radius, 0.5s ease color;
+	transition: 0.5s ease border, 1s ease border-radius, 0.5s ease color;
+	border-bottom-width: 0px;
+	border-bottom-style: solid;
+	border-bottom-color: red;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+a:hover, a:focus {
+	/*text-decoration: underline;*/
+	color: red;
+	-webkit-transition: 0.5s ease border, 1s ease border-radius, 0.5s ease color;
+	transition: 0.5s ease border, 1s ease border-radius, 0.5s ease color;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: red;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
+}
+
+h2 {
+	margin-bottom: 12px;
+/*	margin-top: 6px;*/
+}
+h3 {
+	margin-top:5px;
+	margin-bottom:5px;
+	font-size:1.25em;
+}
+#content {
+	font-family:monospace;
+	background-color: white;
+	border-top: 1px solid #646464;
+	border-bottom: 1px solid #646464;
+	padding-top: 10px;
+	padding-bottom: 14px;
+	margin-left: 0px;
+	padding-left: 12px;
+}
+#foot {
+	font: 0.9em monospace;
+	color: #787878;
+	padding-top: 4px;
+	border-bottom-color: #787878;
+}
+#weather {
+	margin-left: 1.5em;
+}

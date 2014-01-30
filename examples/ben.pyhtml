@@ -8,7 +8,7 @@ except:
 <html>
 <head>
 <title>Ben is...</title>
-<link rel="stylesheet" href="http://niles.mooo.com/style.css" />
+<link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 <h2>Ben is...</h2>

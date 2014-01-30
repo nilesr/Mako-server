@@ -1,1 +1,12 @@
-<html><head><title>No static</title><link rel="stylesheet" href="http://niles.mooo.com/style.css" /><meta http-equiv="refresh" content="5; url=https://www.youtube.com/watch?v=gvdf5n-zI14" /></head><body><h2>No static files</h2><div id="content"><h3> You will be redirected in five seconds</h3>Stubbornly refusing to serve the static file "${filename}" over this protocol. Please use my implimentation of the mako templating engine, or gtfo.</div></body></html>
+<html>
+<head>
+<title>No static</title>
+<link rel="stylesheet" href="/style.css" />
+<meta http-equiv="refresh" content="5; url=https://www.youtube.com/watch?v=gvdf5n-zI14" />
+</head>
+<body>
+<h2>No static files</h2>
+<div id="content">
+<h3> You will be redirected in five seconds</h3>Stubbornly refusing to serve the static file "${filename}" over this protocol. Please use my implimentation of the mako templating engine, or gtfo.</div>
+</body>
+</html>

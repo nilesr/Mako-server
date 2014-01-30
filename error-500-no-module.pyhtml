@@ -3,7 +3,7 @@ import cgi
 %>
 <html>
 <head>
-<link rel="stylesheet" href="http://niles.mooo.com/style.css" />
+<link rel="stylesheet" href="/style.css" />
 <title>Error 500 - No loaded module is equipped to handle this file</title>
 </head>
 <body>

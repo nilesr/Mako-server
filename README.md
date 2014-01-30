@@ -37,6 +37,8 @@ This uses the main server's built in log function, which uses a log file specifi
 
 This takes some getting used to, and definitely isn't required, but can be incredibly powerful.
 
+Note that this logs each rewrite, in order. 
+
 Some example configuration, then what it does.
 <pre>
 sets: set-1,set-2
@@ -135,7 +137,7 @@ Returns a 500 error code and renders the file error-500-no-module.pyhtml
 
 If you include mod_default before this, this will never get called
 
-It's really only if you are using mod_simple_vhost but you don't want mod_default to serve any files, so you just take it out of the module order. Then, if no host applies in mod_simple_vhost, it will ideally eventually execute this module
+It's really only for if you are using mod_simple_vhost but you don't want mod_default to serve any files, so you just take it out of the module order. Then, if no host applies in mod_simple_vhost, it will ideally eventually execute this module
 
 ### What if no module returns anything?
 
