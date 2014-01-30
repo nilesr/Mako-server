@@ -7,9 +7,7 @@ This is 100% portable, and can be run from anywhere on the system. I recommend /
 
 I recommend starting it like ./server.py or /etc/mako-server/server.py, but you can also start it with python server.py
 
-There is currently an installer for Mac OS X.
-
-Once installed, use the commands "mako-server-start" "mako-server-stop" or "mako-server-restart" to control the program
+There is currently an installer for Mac OS X, but all it does is make the "mako-server-start" "mako-server-stop" and "mako-server-restart", then install launchd job to daemonize the server, you still have to put these files somewhere on your system, like /etc or /Library
 
 ## Planned features
 
