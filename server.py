@@ -51,7 +51,7 @@ def serverError(start_response,status,filename=""):
 			start_response("500 Internal Server Error", [('Content-type','text/html')])
 		except: # This hapends if the headers were already set by something else
 			pass
-		return "You fucked something up yo"
+		return "The server attempted to send an error that I've never heard of before. The error code in question was " + str(status)
 #**
 #* Returns a value that is then sent to the connecting client
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
@@ -71,10 +71,10 @@ def serve(environ, start_response):
 		pass
 	return "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')
 #**
-#* Gets the entry for a field from a POST or GET form request
+#* Gets the entry for a field from a POST or GET form request, probably
 #* <p>
 #* I'm not going to lie, I have no idea how or why this works
-#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @author			No idea <nobody@>
 #* @version			devel/unreleased
 #* @since			2013-01-29
 #* @params			list f

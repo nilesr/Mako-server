@@ -32,7 +32,7 @@ def onRequest(**kargs):
 			keep_blank_values = True
 	)
 	#**
-	#* This sets d to the GET/POST headers
+	#* This sets d to the GET/POST headers, probably
 	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
 	if d:
 		kargs['log']("Rendering page with cgi variables: " + str(d))
