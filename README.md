@@ -206,6 +206,8 @@ Pretty simple security.
 
 Prevents a client from sending a string like "/directory/../../../.." or ".." and breaking out of the document root.
 
+Note that if you have a web page that gets files from the filesystem, this will offer no protection whatsoever
+
 This module does not return a response.
 
 Introduced version 066
