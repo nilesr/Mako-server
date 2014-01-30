@@ -202,7 +202,12 @@ if __name__ == '__main__':
 		for otherpidfile in glob.glob("/tmp/mako.*"):
 			if otherpidfile == pidfile:
 				continue
-			otherpidfileobject = open(otherpidfile,'r')
+			try:
+				otherpidfileobject = open(otherpidfile,'r')
+			except IOError:
+				#**
+				#* We don't have permission to open the file
+				continue
 			try:
 				otherpid = int(otherpidfileobject.read())
 			except:
