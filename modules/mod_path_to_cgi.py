@@ -29,7 +29,7 @@ def onLoad(**kargs):
 		sys.exit(1)
 	kargs['log']("Simple vhost module loaded")
 #**
-#* For each set, apply the regular expression to change the path, and 
+#* For each set, apply the regular expression to change the path, and append the name of the set to the cgi variable, with the value of the url, minus the regular expression.
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
 #* @since			2013-01-30
