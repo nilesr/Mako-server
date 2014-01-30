@@ -64,7 +64,7 @@ def onRequest(**kargs):
 				except OSError:
 					return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
 				except:
-					print traceback.format_exc()
+					kargs['log'](traceback.format_exc())
 					return kargs["serverError"](kargs["start_response"],500), kargs['environ']
 			else:
 				return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
@@ -78,7 +78,7 @@ def onRequest(**kargs):
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
 			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 		except:
-			print traceback.format_exc()
+			kargs['log'](traceback.format_exc())
 			return kargs["serverError"](kargs["start_response"],500), kargs['environ']
 	#**
 	#* Otherwise, check our configuration to see if we will serve static files, and either send the file, send a file is empty warning, or send a message saying we do not serve static files
@@ -104,5 +104,5 @@ def onRequest(**kargs):
 				kargs["start_response"]("200 OK", [('Content-type','text/html')])
 				return rendered, kargs['environ']
 		except:
-			print traceback.format_exc()
+			kargs['log'](traceback.format_exc())
 			return kargs["serverError"](kargs["start_response"],500,uri), kargs['environ']

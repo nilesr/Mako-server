@@ -4,7 +4,7 @@ if test $EUID -ne 0; then
 	exit 1
 fi
 echo How do you run your program? Include full paths, and no quotes
-echo "Example: '/usr/bin/env python -O /etc/mako-server/server.py' or '/etc/mako-server/server.py -P /var/run/mako-server.pid'"
+echo "Example: '/etc/mako-server/server.py' or '/etc/mako-server/server.py -P /var/run/mako-server.pid'"
 read -p "> " arguments
 echo What user should run this program?
 echo "Example: '_www'"
@@ -28,7 +28,7 @@ for x in $arguments; do
 done
 echo '</array>
 <key>UserName</key>
-<string>$user</string>
+<string>'$user'</string>
 </dict>
 </plist>' >> temp.plist
 mv temp.plist /Library/LaunchDaemons/com.niles.mako-server.plist
@@ -39,6 +39,5 @@ echo "launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /
 echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-stop
 echo "launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
 echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-restart
-echo "launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
-echo "launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-restart
+echo "/usr/local/bin/mako-server-stop;/usr/local/bin/mako-server-start" >> /usr/local/bin/mako-server-restart
 chmod +x /usr/local/bin/mako-server-start /usr/local/bin/mako-server-stop /usr/local/bin/mako-server-restart
