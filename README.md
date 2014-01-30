@@ -140,7 +140,7 @@ If index.pyhtml does exist in that directory, it renders it
 
 If the file is not a directory, it checks to see if the file requested ends with .pyhtml, and if it does, it attempts to render and send the file
 
-If an error occurs rendering that file, it prints a stack trace to the console (but not the log file) and sends a 500 error page to the client, using the file error-500.pyhtml. Again, you probably don't need to edit this file, but it can't hurt to open it up and see what's inside before putting it in your web server
+If an error occurs rendering that file, it prints a stack trace to the console and log file, then sends a 500 error page to the client, using the file error-500.pyhtml. Again, you probably don't need to edit this file, but it can't hurt to open it up and see what's inside before putting it in your web server
 
 If the file does not exist, it returns a 404 error using the file error-404.pyhtml. You can guess what I have to say about that
 
