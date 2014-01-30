@@ -13,7 +13,7 @@ import pymysql, cgi, hashlib
 		<h2>Login page</h2>
 		<div id="content">
 			<%
-				if 'username' in d and 'username' in d:
+				if 'username' in d and 'password' in d:
 					conn = pymysql.connect(host='127.0.0.1', port=3306, user='readonly', passwd='', db='test')
 					cur = conn.cursor()
 					#text = conn.escape(request[1])

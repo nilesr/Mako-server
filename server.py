@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
-import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time
+import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback
 #**
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
@@ -62,9 +62,12 @@ def serverError(start_response,status,filename=""):
 def serve(environ, start_response):
 	new_environ = environ
 	for module in moduleObjects:
-		returnvalue, new_environ = module.onRequest(start_response=start_response,environ=new_environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
-		if returnvalue:
-			return returnvalue
+		try:
+			returnvalue, new_environ = module.onRequest(start_response=start_response,environ=new_environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
+			if returnvalue:
+				return returnvalue
+		except:
+			log(traceback.format_exc())
 	try:
 		start_response("500 Internal Server Error", [('Content-type','text/text')])
 	except:

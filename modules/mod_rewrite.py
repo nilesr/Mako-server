@@ -14,11 +14,11 @@ def onLoad(**kargs):
 		global sets
 		#**
 		#* "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
-		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
+		sets = dict()
+		global log
+		log = bool(int(kargs["config"].get("mod_rewrite","log")))
 		for set in kargs["config"].get("mod_rewrite","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
-				global log
-				log = bool(int(kargs["config"].get("mod_rewrite","log")))
 				sets[set] = dict()
 				sets[set]['conditions'] = []
 				sets[set]['change'] = kargs["config"].get("mod_rewrite",set+"-change").split(kargs["config"].get("general","listDelimiter"))
@@ -29,10 +29,11 @@ def onLoad(**kargs):
 			except ConfigParser.NoOptionError:
 				continue
 		kargs['log']("mod_rewrite loaded")
+		kargs['log']("Loaded rewrite rules: " + str(sets))
 	except:
-		kargs['log']("Your vhost settings are incorrect")
+		kargs['log']("Your mod_rewrite settings are incorrect")
 		sys.exit(1)
-	kargs['log']("Simple vhost module loaded")
+	kargs['log']("mod_rewrite module loaded")
 #**
 #* For each set, loop through each condition to see if that set applies. If it does, execute the regular expression on the PATH_INFO environment variable and log a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>

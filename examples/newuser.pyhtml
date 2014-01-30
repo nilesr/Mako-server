@@ -1,0 +1,50 @@
+<%!
+import sys
+sys.path.append("/usr/local/lib/python2.7/site-packages/")
+sys.path.append("/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/PyMySQL-0.6.1-py2.7.egg")
+import pymysql, cgi, hashlib,random
+%>
+<!doctype html>
+<html>
+	<head>
+		<title>${"Sql test"}</title>
+		<link rel="stylesheet" href="/style.css" />
+	</head>
+	<body>
+		<h2>Login page</h2>
+		<div id="content">
+			<%
+				if 'username' in d and 'password' in d:
+					conn = pymysql.connect(host='127.0.0.1', port=3306, user='readonly', passwd='', db='test')
+					cur = conn.cursor()
+					cur.execute("SELECT id FROM users ORDER BY id DESC LIMIT 1;")
+					rows = []
+					for row in cur:
+						newid = int(row[0]) + 1
+						break
+					query = "INSERT INTO users (id,Username,Password,Messages) VALUES('" + str(newid) + "','" + d['username'] + "','" + hashlib.md5(d['password']).hexdigest() + "','" + str(random.randint(0,100)) + "');"
+					cur.execute(query)
+					cur.connection.commit()
+					showform = False
+				else:
+					showform = True
+				try:
+					cur.close()
+					conn.close()
+				except:
+					pass
+			%>
+			% if showform:
+			<h3>Make a new user!</h3>
+			<form name="input" action="" method="post">
+			Username: <input type="text" name="username"><br>
+			Password: <input type="text" name="password"><br>
+			<input type="submit" value="Submit">
+			</form>
+			% else:
+			<h3>Account ${d['username']} created! ${query}</h3>
+			<div><a href="sql.pyhtml">Now go login</a></div>
+			% endif
+		</div>
+	</body>
+</html>
