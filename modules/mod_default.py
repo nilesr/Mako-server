@@ -34,6 +34,8 @@ def onRequest(**kargs):
 	#**
 	#* This sets d to the GET/POST headers
 	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
+	if d:
+		kargs['log']("Rendering page with cgi variables: " + str(d))
 	#**
 	#* This sets URI to something like "/" or "/index.pyhtml" or "/directory/specific_file.pyhtml"
 	uri = kargs["environ"].get('PATH_INFO', '/')

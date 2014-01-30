@@ -218,7 +218,12 @@ if __name__ == '__main__':
 			except:
 				pass
 			otherpidfileobject.close()
-			os.remove(otherpidfile)
+			try:
+				os.remove(otherpidfile)
+			except IOError:
+				#**
+				#* We don't have permission to delete the file
+				pass
 	#**
 	#* Attempts to write the process ID to the pid file
 	try:
