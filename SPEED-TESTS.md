@@ -1,3 +1,7 @@
+### If you just want the tl;dr on this file, this web server is 10.53% slower than lighttpd running with php-cgi and I didn't test apache
+
+### Seriously, it's still incredibly fast. Like 0.05ish seconds vs 0.045ish seconds fast.
+
 To run a speed check, I used these scripts on my computer. This would use the loopback interface, so there would be almost no latency
 
 <pre>
@@ -96,6 +100,6 @@ lighttpd-php-cgi-remote.log - 19
 lighttpd-php-cgi.log - 114
 </pre>
 
-As you can see, on the local host, there is a very dramatic difference, but from a remote host, you wouldn't notice much.
+As you can see, on the local host, there is a very dramatic difference, but from a remote host, it's only 10.53% slower.
 
 Plus, who wants to use PHP anyways.

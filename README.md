@@ -1,6 +1,8 @@
 # Mako-server
 This is a multithreaded webserver that can serve files using the python-based [mako template engine](http://www.makotemplates.org/)
 
+For speed comparisons, see SPEED-TESTS.md
+
 ## Portability
 
 This is 100% portable, and can be run from anywhere on the system. I recommend /etc/mako-server, but really it doesn't matter
