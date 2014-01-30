@@ -17,6 +17,8 @@ def onLoad(**kargs):
 		sets = dict() # "sets" is a dictionary, which contains a dynamic amount of dictionaries, which contains two values: "conditions" and "change". Conditions is a list with a dynamic number of lists, each with two values: an environment variable and a regular expression. change contains a list of two values, both halves of a regular expression
 		for set in kargs["config"].get("mod_rewrite","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
+				global log
+				log = bool(int(kargs["config"].get("mod_rewrite","log")))
 				sets[set] = dict()
 				sets[set]['conditions'] = []
 				sets[set]['change'] = kargs["config"].get("mod_rewrite",set+"-change").split(kargs["config"].get("general","listDelimiter"))
@@ -49,9 +51,11 @@ def onRequest(**kargs):
 				apply = False
 				continue
 		if apply:
-			logmessage = set + " is rewriting '" + kargs['environ']['PATH_INFO']
+			if log:
+				logmessage = set + " is rewriting '" + kargs['environ']['PATH_INFO']
 			kargs['environ']['PATH_INFO'] = re.sub(sets[set]['change'][0],sets[set]['change'][1],kargs['environ']['PATH_INFO'])
-			logmessage += "' to '" + kargs['environ']['PATH_INFO'] + "'"
-			kargs['log'](logmessage)
+			if log:
+				logmessage += "' to '" + kargs['environ']['PATH_INFO'] + "'"
+				kargs['log'](logmessage)
 	return False, kargs['environ']
 

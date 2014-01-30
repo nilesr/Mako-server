@@ -1,9 +1,20 @@
 # Mako-server
 This is a multithreaded webserver that can serve files using the python-based [mako template engine](http://www.makotemplates.org/)
 
+## Portability
+
+This is 100% portable, and can be run from anywhere on the system. I recommend /etc/mako-server, but really it doesn't matter
+
+## Planned features
+
+* daemonization
+* an installer for various distros of linux
+
 ## Installation
 
-It can be run from wherever it is on the system. The default config file is config.conf. A sample.conf is provided
+This does not need to be installed. See the "Portability" clause of the "Mako-server" heading.
+
+The default config file is called config.conf. A sample.conf is provided
 
 ## Command line options
 
@@ -37,10 +48,11 @@ This uses the main server's built in log function, which uses a log file specifi
 
 This takes some getting used to, and definitely isn't required, but can be incredibly powerful.
 
-Note that this logs each rewrite, in order. 
+Note that this logs each rewrite, in order, if log is set to 1 
 
 Some example configuration, then what it does.
 <pre>
+log: 1
 sets: set-1,set-2
 set-1-condition-1: bypass
 set-1-change: index,new
