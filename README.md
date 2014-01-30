@@ -5,6 +5,12 @@ This is a multithreaded webserver that can serve files using the python-based [m
 
 This is 100% portable, and can be run from anywhere on the system. I recommend /etc/mako-server, but really it doesn't matter
 
+I recommend starting it like ./server.py or /etc/mako-server/server.py, but you can also start it with python server.py
+
+There is currently an installer for Mac OS X.
+
+Once installed, use the commands "mako-server-start" "mako-server-stop" or "mako-server-restart" to control the program
+
 ## Planned features
 
 * daemonization
@@ -19,15 +25,18 @@ The default config file is called config.conf. A sample.conf is provided
 ## Command line options
 
 -h/--help: prints help
+
 --suppress-urge-to-kill: will not kill other mako web server processes
+
 -c/--config-file: specifies an alternative configuration file
+
 -P/--pidfile: specifies an alternative process identifier file
 
 ## The module system
 
 Mako-server is split into several modules. It is easy to write your own module, but the ones that come pre-installed should more than suit your needs. They are organized in the config file in order of execution. Each module has an opportunity to modify environment variables, and to load a page to send to a client.
 
-It is incredibly easy to make your own module.
+It is incredibly easy to make your own module. You could rewrite mod_default to use nemo instead of mako by adding "from nemo.parser import nemo" and pasting "preprocessor=nemo," into it six or seven times. Or you could make a module that logs all queries to an IRC channel. Or you could turn this into a HTTP proxy. Really the possibilities are endless.
 
 The built in modules, in suggested order of execution, are below
 
@@ -88,11 +97,15 @@ local-root: /var/www/admin/
 </pre>
 
 So first the sets option. This is a list of every vhost configuration you load
+
 Each -host option is a regular expression to be checked against the Host header sent by the client
+
 Each -root option is a file path to the document root for that vhost configuration
 
 First, we load mysite1. If the regular expression in mysite1-host applies, we employ mod_default to serve that file using the document root in the configuration at mysite1-root, which is /var/www/site_one_htdocs/
+
 The same thing happens for mysite2
+
 If we are connecting and giving the Host header something that has localhost in it, it will serve out queries from /var/www/admin/
 
 If a vhost regular expression applies, this module will always stop the execution chain. If nothing applies, it returns, and server.py continues down the list of modules.

@@ -4,8 +4,12 @@ if test $EUID -ne 0; then
 	exit 1
 fi
 echo How do you run your program? Include full paths, and no quotes
-echo "Example: '/usr/bin/env python -O /etc/mako-server/server.py'"
+echo "Example: '/usr/bin/env python -O /etc/mako-server/server.py' or '/etc/mako-server/server.py -P /var/run/mako-server.pid'"
 read -p "> " arguments
+echo What user should run this program?
+echo "Example: '_www'"
+read -p "> " user
+
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -24,10 +28,17 @@ for x in $arguments; do
 done
 echo '</array>
 <key>UserName</key>
-<string>_www</string>
+<string>$user</string>
 </dict>
 </plist>' >> temp.plist
 mv temp.plist /Library/LaunchDaemons/com.niles.mako-server.plist
 launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist
 echo Installed and running.
-rm temp.plist
+echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-start
+echo "launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-start
+echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-stop
+echo "launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
+echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-restart
+echo "launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
+echo "launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-restart
+chmod +x /usr/local/bin/mako-server-start /usr/local/bin/mako-server-stop /usr/local/bin/mako-server-restart
