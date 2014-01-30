@@ -38,7 +38,7 @@ Mako-server is split into several modules. It is easy to write your own module, 
 
 It is incredibly easy to make your own module. You could rewrite mod_default to use nemo instead of mako by adding "from nemo.parser import nemo" and pasting "preprocessor=nemo," into it six or seven times. Or you could make a module that logs all queries to an IRC channel. Or you could turn this into a HTTP proxy. Really the possibilities are endless.
 
-The built in modules, in suggested order of execution, are below
+The built in modules are below
 
 ### mod_logging
 
@@ -163,6 +163,52 @@ Returns a 500 error code and renders the file error-500-no-module.pyhtml
 If you include mod_default before this, this will never get called
 
 It's really only for if you are using mod_simple_vhost but you don't want mod_default to serve any files, so you just take it out of the module order. Then, if no host applies in mod_simple_vhost, it will ideally eventually execute this module
+
+### mod_path_to_cgi
+
+This provides something that should probably be possible with mod_rewrite, but isn't.
+
+This allows you to change paths to files, but keep the path saved somewhere
+
+Here's an example configuration
+<pre>
+log: 1
+sets: api-key
+api-key: ^(/api/),/d.pyhtml
+</pre>
+
+Here's <pre>d.pyhtml</pre>
+<pre>
+${str(d)}
+</pre>
+
+An example request, <pre>/api/68b329da9893e34099c7d8ad5cb9c940/</pre> would be redirected to <pre>/d.pyhtml</pre>
+
+d.pyhtml would render <pre>{'api-key': '68b329da9893e34099c7d8ad5cb9c940/'}</pre>
+
+You could extend this to look something like this
+
+<pre>/api/message/unread</api>
+
+to <pre>/d.pyhtml</pre> which would render
+
+<pre>{'api-key': 'message/unread'}</pre>
+
+If you renamed api-key to something else in the config file, this would make more sense
+
+It is evaluated just like all the other cgi variables, including GET and POST requests.
+
+This module does not return a response
+
+### mod_simple_security
+
+Pretty simple security.
+
+Prevents a client from sending a string like "/directory/../../../.." or ".." and breaking out of the document root.
+
+This module does not return a response.
+
+Introduced version 066
 
 ### What if no module returns anything?
 

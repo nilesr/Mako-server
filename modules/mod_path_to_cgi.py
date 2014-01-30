@@ -27,7 +27,7 @@ def onLoad(**kargs):
 		kargs['log'](traceback.format_exc())
 		kargs['log']("Your mod_path_to_cgi settings are incorrect")
 		sys.exit(1)
-	kargs['log']("Simple vhost module loaded")
+	kargs['log']("mod_path_to_cgi module loaded")
 #**
 #* For each set, apply the regular expression to change the path, and append the name of the set to the cgi variable, with the value of the url, minus the regular expression.
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
