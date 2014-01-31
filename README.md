@@ -182,7 +182,7 @@ Here's <pre>d.pyhtml</pre>
 % if d:
 ${str(d)}
 % else:
-<p>No cgi variables :(</p>
+&lt;p&gt;No cgi variables :(&lt;/p&gt;
 % endif
 </pre>
 
