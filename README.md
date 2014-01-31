@@ -188,7 +188,7 @@ d.pyhtml would render <pre>{'api-key': '68b329da9893e34099c7d8ad5cb9c940/'}</pre
 
 You could extend this to look something like this
 
-<pre>/api/message/unread</api>
+<pre>/api/message/unread</pre>
 
 to <pre>/d.pyhtml</pre> which would render
 

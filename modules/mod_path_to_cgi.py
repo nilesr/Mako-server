@@ -41,6 +41,8 @@ def onRequest(**kargs):
 		try:
 			if re.match(sets[set][0],new_environ['PATH_INFO']):
 				new_environ['QUERY_STRING'] = new_environ['QUERY_STRING'] + "&" + set + "=" + re.sub(sets[set][0],"",new_environ['PATH_INFO'])
+				if new_environ['QUERY_STRING'][-1] == "/":
+					new_environ['QUERY_STRING'] = new_environ['QUERY_STRING'][0:-1]
 				newpath = re.sub(sets[set][0] + ".*",sets[set][1],new_environ['PATH_INFO'])
 				if log:
 					kargs['log']("New path: " + newpath)
