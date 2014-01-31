@@ -179,7 +179,11 @@ api-key: ^(/api/),/d.pyhtml
 
 Here's <pre>d.pyhtml</pre>
 <pre>
+% if d:
 ${str(d)}
+% else:
+<p>No cgi variables :(</p>
+% endif
 </pre>
 
 An example request, <pre>/api/68b329da9893e34099c7d8ad5cb9c940/</pre> would be redirected to <pre>/d.pyhtml</pre>
