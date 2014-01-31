@@ -20,7 +20,7 @@ def onLoad(**kargs):
 #* @returns			bool false, dictionary environment
 def onRequest(**kargs):
 	new_environ = kargs['environ'].copy()
-	if re.match("/\.\.",new_environ['PATH_INFO']):
+	if re.match("/\.\.*",new_environ['PATH_INFO']):
 		new_environ['PATH_INFO'] = re.sub("/\.\.",'',"/" + new_environ['PATH_INFO'])
 		kargs['log']("Security match found! Rewriting")
 		extravar, new_environ = onRequest(root=kargs['root'],start_response=kargs['start_response'],environ=new_environ,log=kargs['log'],logfile=kargs['logfile'],serverError=kargs['serverError'],config=kargs['config'],file=kargs['file'],getfield=kargs['getfield'])
