@@ -21,13 +21,13 @@ def onLoad(**kargs):
 			except ConfigParser.NoOptionError:
 				kargs['log'](traceback.format_exc())
 				continue
-		kargs['log']("mod_path_to_cgi loaded")
-		kargs['log']("Loaded path to cgi rules: " + str(sets))
 	except:
 		kargs['log'](traceback.format_exc())
 		kargs['log']("Your mod_path_to_cgi settings are incorrect")
 		sys.exit(1)
-	kargs['log']("mod_path_to_cgi module loaded")
+	kargs['log']("mod_path_to_cgi loaded")
+	kargs['log']("Loaded path to cgi rules: " + str(sets))
+
 #**
 #* For each set, apply the regular expression to change the path, and append the name of the set to the cgi variable, with the value of the url, minus the regular expression.
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
