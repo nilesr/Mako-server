@@ -8,7 +8,7 @@ if __name__ == '__main__':
 #* Logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -17,7 +17,7 @@ def onLoad(**kargs):
 #* Starts a 500 server error response, and sends the client a 500 server error
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			string the rendered template for the 500 nothing executed file, dictionary environment
 def onRequest(**kargs):

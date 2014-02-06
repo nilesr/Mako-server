@@ -8,7 +8,7 @@ if __name__ == '__main__':
 #* Loads the relevant configuration options, and logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -20,7 +20,7 @@ def onLoad(**kargs):
 #* Attempts to serve a rendered mako file, or a static file, or a directory listing, or a 404 error, or a 403, or a 500 error
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			string a rendered mako file or a static file or a directory listing or a 404 error or a 403 or a 500 error, dictionary environment
 def onRequest(**kargs):

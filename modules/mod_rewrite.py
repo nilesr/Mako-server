@@ -6,7 +6,7 @@ if __name__ == '__main__':
 #* Loads the relevant configuration options, and logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -38,7 +38,7 @@ def onLoad(**kargs):
 #* For each set, loop through each condition to see if that set applies. If it does, execute the regular expression on the PATH_INFO environment variable and log a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool false, dictionary environment
 def onRequest(**kargs):

@@ -6,7 +6,7 @@ if __name__ == '__main__':
 #* Loads the relevant configuration options, and logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-30
+#* @since			2014-01-30
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -32,7 +32,7 @@ def onLoad(**kargs):
 #* For each set, apply the regular expression to change the path, and append the name of the set to the cgi variable, with the value of the url, minus the regular expression.
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-30
+#* @since			2014-01-30
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool false, dictionary environment
 def onRequest(**kargs):

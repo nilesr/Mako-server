@@ -38,6 +38,8 @@ Mako-server is split into several modules. It is easy to write your own module, 
 
 It is incredibly easy to make your own module. You could rewrite mod_default to use nemo instead of mako by adding "from nemo.parser import nemo" and pasting "preprocessor=nemo," into it six or seven times. Or you could make a module that logs all queries to an IRC channel. Or you could turn this into a HTTP proxy. Really the possibilities are endless.
 
+In version 076 I took my own advice and made a module that logs all queries to an IRC channel.
+
 The built in modules are below
 
 ### mod_logging
@@ -214,7 +216,27 @@ Note that if you have a web page that gets files from the filesystem, this will 
 
 This module does not return a response.
 
-Introduced version 066
+Introduced in version 066
+
+### mod_irc_logging
+
+Just like mod_logging, except logs to IRC. An example configuration
+
+<pre>
+[mod_irc_logging]
+server: irc.network.net
+channel: my_channel
+nickname: loggerBot
+order: IP address:,REMOTE_ADDR,REQUEST_METHOD,File requested:,PATH_INFO,User-agent string:,HTTP_USER_AGENT
+</pre>
+
+For help with the order value, see the mod_logging help
+
+For help with IRC, refer to google or RFCs 1459, 2810, 2811, 2812 and 2813
+
+You may not specify a # in your channel name, that is added automatically.
+
+Introduced in version 076
 
 ### What if no module returns anything?
 

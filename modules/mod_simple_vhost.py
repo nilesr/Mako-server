@@ -6,7 +6,7 @@ if __name__ == '__main__':
 #* Loads the relevant configuration options, imports mod_default, and logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -30,7 +30,7 @@ def onLoad(**kargs):
 #* For each set, check if the set applied and if it did, serve the request with the document root specified in the config file. If no set applies, continue to the next module in the execution order
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			(string a response rendered by mod_default, dictionary environment) or (bool false, dictionary environment)
 #* @see				mako-server.modules.mod_default.onRequest

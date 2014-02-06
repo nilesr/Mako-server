@@ -6,7 +6,7 @@ if __name__ == '__main__':
 #* Logs a message
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/066
-#* @since			2013-01-30
+#* @since			2014-01-30
 #* @params			function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool true
 def onLoad(**kargs):
@@ -15,7 +15,7 @@ def onLoad(**kargs):
 #* Checks the environment variable PATH_INFO
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/066
-#* @since			2013-01-30
+#* @since			2014-01-30
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			bool false, dictionary environment
 def onRequest(**kargs):

@@ -6,7 +6,7 @@ import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,trac
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			missive 
 #* @returns			True
 def log(missive):
@@ -24,7 +24,7 @@ def log(missive):
 #* Uses the start_response to set headers. If the headers are already set, it just returns the rendered error file. Note that the "filename" parameter is refered to as "uri" in most of the rest of the program.
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			function start_response, int status, optional str filename
 #* @returns			A string equal to the rendered view of a mako template, which is then in theory sent to the client
 def serverError(start_response,status,filename=""):
@@ -56,7 +56,7 @@ def serverError(start_response,status,filename=""):
 #* Returns a value that is then sent to the connecting client
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			list environ (environment), function start_response (used to sent headers to the client)
 #* @returns			A string equal to what is sent to the client by the wsgiref server.
 def serve(environ, start_response):
@@ -79,7 +79,7 @@ def serve(environ, start_response):
 #* I'm not going to lie, I have no idea how or why this works
 #* @author			No idea <nobody@>
 #* @version			devel/unreleased
-#* @since			2013-01-29
+#* @since			2014-01-29
 #* @params			list f
 #* @returns			A string equal to the value of the field specified (f)
 def getfield(f):
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 	#* Attempts to log that the program is exiting, then delete the PID file.
 	#* @author			Niles Rogoff <nilesrogoff@gmail.com>
 	#* @version			devel/unreleased
-	#* @since			2013-01-29
+	#* @since			2014-01-29
 	#* @params			int signum, unknown stack
 	#* @returns			True
 	def signaled(sihipsterm, stack):
