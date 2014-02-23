@@ -242,3 +242,16 @@ Introduced in version 076
 
 The server will send a 500 response, mime type text/text and the string "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. ", plus the email specified in the config file
 
+
+## Changelog
+
+This is incomplete
+
+#### Version 077
+* When using mod_default, the 500 error page now shows a stack trace
+
+#### Version 076
+* mod_irc_logging
+
+#### Version 066
+* mod_simple_security

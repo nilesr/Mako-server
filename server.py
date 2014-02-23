@@ -27,13 +27,13 @@ def log(missive):
 #* @since			2014-01-29
 #* @params			function start_response, int status, optional str filename
 #* @returns			A string equal to the rendered view of a mako template, which is then in theory sent to the client
-def serverError(start_response,status,filename=""):
+def serverError(start_response,status,filename="",**kargs):
 	if status == 500:
 		try:
 			start_response("500 Internal Server Error", [('Content-type','text/html')])
 		except: # This hapends if the headers were already set by something else
 			pass
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-500.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-500.pyhtml").render(filename=filename,config=config,kargs=kargs)
 	elif status == 404:
 		try:
 			start_response("404 Not found", [('Content-type','text/html')])

@@ -1,5 +1,5 @@
 <%!
-import cgi
+import cgi, traceback
 %>
 <html>
 <head>
@@ -10,6 +10,14 @@ import cgi
 <h2>500 error</h2>
 <div id="content">
 <h3>The server encountered an error processing your request</h3>
+<%
+try:
+	x = kargs['error_string'].replace("\n","<br />")
+except:
+	x = traceback.format_exc()
+%>
+${x}
+<br />
 Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>
 </div>
 </body>
