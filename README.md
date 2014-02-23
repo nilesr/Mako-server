@@ -247,6 +247,9 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+#### Version 078
+* Added a configuration option for showing a stack trace
+
 #### Version 077
 * When using mod_default, the 500 error page now shows a stack trace
 
