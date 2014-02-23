@@ -35,9 +35,9 @@ mv temp.plist /Library/LaunchDaemons/com.niles.mako-server.plist
 launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist
 echo Installed and running.
 echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-start
-echo "launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-start
+echo "sudo launchctl load -w /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-start
 echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-stop
-echo "launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
+echo "sudo launchctl unload /Library/LaunchDaemons/com.niles.mako-server.plist" >> /usr/local/bin/mako-server-stop
 echo "#!/usr/bin/env bash" > /usr/local/bin/mako-server-restart
 echo "/usr/local/bin/mako-server-stop;/usr/local/bin/mako-server-start" >> /usr/local/bin/mako-server-restart
 chmod +x /usr/local/bin/mako-server-start /usr/local/bin/mako-server-stop /usr/local/bin/mako-server-restart

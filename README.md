@@ -247,6 +247,9 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+#### Version 079
+* Fixed a problem where the server would not always run as the user specified in the install process depending on the user restarting the server
+
 #### Version 078
 * Added a configuration option for showing a stack trace
 
