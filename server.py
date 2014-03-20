@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+#!/usr/bin/env python
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
 import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback
