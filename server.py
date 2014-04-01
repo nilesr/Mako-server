@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
-import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback
+import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback, threading
 #**
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
@@ -87,6 +87,15 @@ def getfield(f):
 		return [getfield(x) for x in f]
 	else:
 		return f.value
+#**
+#* Starts a https server.
+#* @author			Niles Rogoff <nilesrogoff@gmail.com>
+#* @version			081
+#* @since			2014-04-01
+#* @params			none
+#* @returns			nothing
+def start_with_ssl():
+	httpserver.serve(serve, port=ssl_port,host=bind_host,server_version=server_version_string,socket_timeout=render_timeout,use_threadpool=True,threadpool_workers=threads,request_queue_size=request_queue_size,ssl_pem=os.path.dirname(os.path.realpath(__file__))+"/"+ssl_pem_file)		
 
 if __name__ == '__main__':
 	#**
@@ -248,11 +257,55 @@ if __name__ == '__main__':
 	except ValueError:
 		log("Fatal error: The port in config.conf must be an integer")
 		sys.exit(1)
-	logfile = config.get("server","logfile")
-	#**
-	#* Here, we actually start the server
-	import wsgiref.simple_server
-	server = wsgiref.simple_server.make_server('', port, serve)
+	try:
+		logfile = config.get("server","logfile")
+	except:
+		log("Fatal eror reading the logfile from the config file")
+		sys.exit(1)
+	try:
+		ssl_enabled = int(config.get("server","ssl"))
+	except ValueError:
+		log("Fatal error: The ssl option in config.conf must be an integer")
+		sys.exit(1)
+	try:
+		ssl_port = int(config.get("server","ssl_port"))
+	except ValueError:
+		log("Fatal error: The ssl port in config.conf must be an integer")
+		sys.exit(1)
+	try:
+		bind_host = config.get("server","bind_host")
+	except ValueError:
+		log("Fatal error reading bind_host from the config file")
+		sys.exit(1)
+	try:
+		ssl_pem_file = config.get("server","ssl_pem_file")
+	except ValueError:
+		log("Fatal error reading ssl_pem_file from the config file")
+		sys.exit(1)
+	try:
+		server_version_string = config.get("server","server_version_string")
+	except ValueError:
+		log("Fatal error reading server_version_string from the config file")
+		sys.exit(1)
+	try:
+		render_timeout = int(config.get("server","render_timeout"))
+	except ValueError:
+		log("Fatal error reading render_timeout from the config file")
+		log(traceback.format_exc())
+		sys.exit(1)
+	try:
+		threads = int(config.get("server","threads"))
+	except ValueError:
+		log("Fatal error reading threads from the config file")
+		sys.exit(1)
+	try:
+		request_queue_size = int(config.get("server","request_queue_size"))
+	except ValueError:
+		log("Fatal error reading request_queue_size from the config file")
+		sys.exit(1)
+
+
+
 	#**
 	#* Imports every module in the config file.
 	modules = config.get("server","modules").split(config.get("general","listDelimiter"))
@@ -265,6 +318,14 @@ if __name__ == '__main__':
 	for module in moduleObjects:
 		module.onLoad(log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 	log("Info: Server listening on port " + str(port))
-	server.serve_forever()
+	#**
+	#* Here, we actually start the server
+	#* This must come last
+	from paste import httpserver
+	if ssl_enabled == 1:
+		t = threading.Thread(target=start_with_ssl)
+		t.daemon = True
+		t.start()
+	httpserver.serve(serve, port=port,host=bind_host,server_version=server_version_string,socket_timeout=render_timeout,use_threadpool=True,threadpool_workers=threads,request_queue_size=request_queue_size)
 
 

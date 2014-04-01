@@ -247,6 +247,10 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+#### Version 081
+* Moved to the paste module
+* Added SSL support, as well as various other configurable http options
+
 #### Version 080
 * Added an installer for linux. It requires upstart
 * Fixed the first line of server.py so it will actually start. (oops)
