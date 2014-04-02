@@ -12,7 +12,7 @@ import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,trac
 def log(missive):
 	if logfile:
 		try:
-			logfileobject = open(logfile,'w')
+			logfileobject = open(logfile,'a')
 			logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
 			logfileobject.close()
 		except OSError:

@@ -1,3 +1,4 @@
 temporary_files
 *.pyo
 config.conf
+server.pem
