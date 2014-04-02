@@ -247,6 +247,12 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+#### Version 083
+* Fixed the readme (whoops)
+
+#### Version 082
+* Fixed logging. I forgot to change it back to append early on in the project
+
 #### Version 081
 * Moved to the paste module
 * Added SSL support, as well as various other configurable http options
