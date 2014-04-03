@@ -138,8 +138,6 @@ if __name__ == '__main__':
 			log("Fatal error: Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
 			sys.exit(1)
 		if thread:
-			log("Killing ssl thread")
-			log(str(thread.ident))
 			pthread_kill(thread.ident, 9)
 		sys.exit(0)
 	#**

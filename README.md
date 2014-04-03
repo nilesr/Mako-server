@@ -247,6 +247,9 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+#### Version 085
+* Removed unnecessary log messages.
+
 #### Version 084
 * Fixed SSL so that it actually exits with the rest of the program
 * Migrated to Python 3
