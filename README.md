@@ -15,6 +15,9 @@ There is currently an installer for linux, but it requires upstart, and requires
 
 ## Planned features
 
+## Current issues
+
+SSL/TLS connections can sometimes be unusually slow. I am currently looking into this.
 
 ## Installation
 
@@ -247,38 +250,41 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
-#### Version 085
+##### Version 086
+* Changed the readme (Added "Current Issues" section)
+
+##### Version 085
 * Removed unnecessary log messages.
 
-#### Version 084
+##### Version 084
 * Fixed SSL so that it actually exits with the rest of the program
 * Migrated to Python 3
 
-#### Version 083
+##### Version 083
 * Fixed the readme (whoops)
 
-#### Version 082
+##### Version 082
 * Fixed logging. I forgot to change it back to append early on in the project
 
-#### Version 081
+##### Version 081
 * Moved to the paste module
 * Added SSL support, as well as various other configurable http options
 
-#### Version 080
+##### Version 080
 * Added an installer for linux. It requires upstart
 * Fixed the first line of server.py so it will actually start. (oops)
 
-#### Version 079
+##### Version 079
 * Fixed a problem where the server would not always run as the user specified in the install process depending on the user restarting the server
 
-#### Version 078
+##### Version 078
 * Added a configuration option for showing a stack trace
 
-#### Version 077
+##### Version 077
 * When using mod_default, the 500 error page now shows a stack trace
 
-#### Version 076
+##### Version 076
 * mod_irc_logging
 
-#### Version 066
+##### Version 066
 * mod_simple_security
