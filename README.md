@@ -250,6 +250,9 @@ The server will send a 500 response, mime type text/text and the string "No modu
 
 This is incomplete
 
+##### Version 087
+* Bugfixes
+
 ##### Version 086
 * Changed the readme (Added "Current Issues" section)
 

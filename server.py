@@ -154,7 +154,7 @@ if __name__ == '__main__':
 	#* -O runs optimizations, by the way
 	if __debug__:	
 		log("Nonfatal warning: Restarting with -O")
-		listofarguments = ["/usr/bin/env", "python", "-O"]
+		listofarguments = ["/usr/bin/env", "python3", "-O"]
 		for argument in sys.argv:
 			if argument == __file__:
 				continue
