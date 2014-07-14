@@ -17,7 +17,7 @@ There is currently an installer for linux, but it requires upstart, and requires
 
 ## Current issues
 
-SSL/TLS connections can sometimes be unusually slow. I am currently looking into this.
+SSL/TLS thread not stopping with the rest of the server. This cannot be reliabley fixed until Paste updates to python 3. I will be looking into other ways to solve this issue
 
 ## Installation
 
@@ -249,6 +249,9 @@ The server will send a 500 response, mime type text/text and the string "No modu
 ## Changelog
 
 This is incomplete
+
+##### Version 091
+* Realized paste is not compatable with Python 3. Reverted back to update 083, and fixed a few things.
 
 ##### Verison 090
 * Fixed the readme, and replaced sample.conf

@@ -1,8 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
-sys.path.append("/usr/lib/python2.7/dist-packages/mako/")
-import cgi, re, os, mimetypes, configparser, subprocess, glob, signal, time,traceback, threading, mako
+import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback, threading
 #**
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
@@ -17,8 +16,8 @@ def log(missive):
 			logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
 			logfileobject.close()
 		except OSError:
-			print("Error opening logfile. Non-fatal")
-	print(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive)
+			print "Error opening logfile. Non-fatal"
+	print sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive
 #**
 #* Sends an error message to the client
 #* <p>
@@ -119,7 +118,7 @@ if __name__ == '__main__':
 	mimetypes.init()
 	#**
 	#* Reads the configuration file.
-	config = configparser.SafeConfigParser()
+	config = ConfigParser.SafeConfigParser()
 #	configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
 	logfile = False
 	#**
@@ -138,8 +137,6 @@ if __name__ == '__main__':
 		except OSError:
 			log("Fatal error: Failed to delete pid file. It might have vanished while we were running, or I didn't have permission to create it in the first place")
 			sys.exit(1)
-		if thread:
-			pthread_kill(thread.ident, 9)
 		sys.exit(0)
 	#**
 	#* Registers signal handlers for the singals 2, 3, 6 and 15
@@ -148,14 +145,14 @@ if __name__ == '__main__':
 		try:
 			#sihipsterm = getattr(signal,i)
 			signal.signal(i,signaled)
-		except RuntimeError as m:
+		except RuntimeError,m:
 			pass
 	#**
 	#* I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
 	#* -O runs optimizations, by the way
 	if __debug__:	
 		log("Nonfatal warning: Restarting with -O")
-		listofarguments = ["/usr/bin/env", "python3", "-O"]
+		listofarguments = ["/usr/bin/env", "python", "-O"]
 		for argument in sys.argv:
 			if argument == __file__:
 				continue
@@ -314,7 +311,7 @@ if __name__ == '__main__':
 	modules = config.get("server","modules").split(config.get("general","listDelimiter"))
 	sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/modules')
 	try:
-		moduleObjects = list(map(__import__, modules))
+		moduleObjects = map(__import__, modules)
 	except:
 		log("Fatal error: One or more modules failed to import. Please check your config file, and each module file")
 		sys.exit(1)
@@ -325,11 +322,10 @@ if __name__ == '__main__':
 	#* Here, we actually start the server
 	#* This must come last
 	from paste import httpserver
-	thread = False
 	if ssl_enabled == 1:
-		thread = threading.Thread(target=start_with_ssl)
-		thread.daemon = False
-		thread.start()
+		t = threading.Thread(target=start_with_ssl)
+		t.daemon = True
+		t.start()
 	httpserver.serve(serve, port=port,host=bind_host,server_version=server_version_string,socket_timeout=render_timeout,use_threadpool=True,threadpool_workers=threads,request_queue_size=request_queue_size)
 
 

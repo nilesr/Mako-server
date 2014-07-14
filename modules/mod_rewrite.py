@@ -1,6 +1,6 @@
-import sys,os,re,configparser
+import sys,os,re,ConfigParser
 if __name__ == '__main__':
-	print("Do not invoke this directly")
+	print "Do not invoke this directly"
 	sys.exit(1)
 #**
 #* Loads the relevant configuration options, and logs a message
@@ -26,7 +26,7 @@ def onLoad(**kargs):
 				while True:
 					sets[set]['conditions'].append(kargs["config"].get("mod_rewrite",set+"-condition-"+str(i)).split(kargs["config"].get("general","listDelimiter")))
 					i += 1
-			except configparser.NoOptionError:
+			except ConfigParser.NoOptionError:
 				continue
 		kargs['log']("mod_rewrite loaded")
 		kargs['log']("Loaded rewrite rules: " + str(sets))
