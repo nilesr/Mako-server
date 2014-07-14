@@ -2,7 +2,7 @@ import sys,cgi,re,os,mimetypes,traceback
 from mako.lookup import TemplateLookup
 from mako import exceptions
 if __name__ == '__main__':
-	print "Do not invoke this directly"#you dumb shit
+	print("Do not invoke this directly")#you dumb shit
 	sys.exit(1)
 #**
 #* Loads the relevant configuration options, and logs a message
@@ -75,7 +75,8 @@ def onRequest(**kargs):
 			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template(uri).render(d=d,uri=uri,environ=kargs["environ"])
 			kargs["start_response"]("200 OK", [('Content-type','text/html')])
 			return rendered, kargs['environ']
-		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
+		except exceptions.TopLevelLookupException as xxx_todo_changeme:
+			exceptions.TemplateLookupException = xxx_todo_changeme
 			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 		except:
 			kargs['log'](traceback.format_exc())

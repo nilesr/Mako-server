@@ -1,6 +1,6 @@
-import sys,os,re,ConfigParser,traceback
+import sys,os,re,configparser,traceback
 if __name__ == '__main__':
-	print "Do not invoke this directly"
+	print("Do not invoke this directly")
 	sys.exit(1)
 #**
 #* Logs a message

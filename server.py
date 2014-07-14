@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 import sys
-#sys.path.append("/usr/local/lib/python2.7/site-packages/")
-import cgi, re, os, mimetypes, configparser, subprocess, glob, signal, time,traceback, threading
+sys.path.append("/usr/local/lib/python2.7/site-packages/")
+sys.path.append("/usr/lib/python2.7/dist-packages/mako/")
+import cgi, re, os, mimetypes, configparser, subprocess, glob, signal, time,traceback, threading, mako
 #**
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
