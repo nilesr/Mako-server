@@ -16,7 +16,7 @@ def sizeof(num):
 %>
 <html>
 <head>
-<link rel="stylesheet" href="http://niles.mooo.com/style.css" />
+<link rel="stylesheet" href="/style.css" />
 <title>No index.pyhtml</title>
 <style>
 list {background-color: white; border-top: 1px solid #646464; border-bottom: 1px solid #646464; padding-top: 10px; padding-bottom: 14px;}

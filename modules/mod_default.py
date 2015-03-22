@@ -41,10 +41,10 @@ def onRequest(**kargs):
 	uri = kargs["environ"].get('PATH_INFO', '/')
 	if not uri:
 		uri = '/'
-	u = re.sub(r'^\/+', '', uri)
+	#uri = re.sub(r'^\/+', '', uri)
 	#**
 	#* This sets filename to the local file where we are serving the file from
-	filename = kargs["root"] + u
+	filename = kargs["root"] + uri
 	#**
 	#* If it's a directory, append /index.pyhtml to it
 	#* Then, attempt to serve the file. If it doesn't exist, check the config file to see if we support directory listings. Depending on that value, either render and return a list of files and directories in said directory, or render and return a 403 error
@@ -85,6 +85,8 @@ def onRequest(**kargs):
 	else:
 		try:
 			if not os.path.exists(filename):
+				#kargs["start_response"]("404 Not found", [('Content-type','text/html')])
+				#return filename, kargs['environ']
 				return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 			if servestaticfiles == True:
 				mime = mimetypes.guess_type(filename)[0]
