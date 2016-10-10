@@ -58,7 +58,7 @@ def onRequest(**kargs):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("list.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("list.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
 					kargs["start_response"]("200 OK", [('Content-type','text/html')])
 					return rendered, kargs['environ']
 				except OSError:
@@ -72,7 +72,7 @@ def onRequest(**kargs):
 	#* If the uri ends with .pyhtml, attempt to serve the file using mako
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
-			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template(uri).render(d=d,uri=uri,environ=kargs["environ"])
+			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template(uri).render(d=d,uri=uri,environ=kargs["environ"])
 			kargs["start_response"]("200 OK", [('Content-type','text/html')])
 			return rendered, kargs['environ']
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
@@ -104,7 +104,7 @@ def onRequest(**kargs):
 				else:
 					return rendered, kargs['environ']
 			else:
-				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("no.static.pyhtml").render(filename=uri,config=config)
+				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("no.static.pyhtml").render(filename=uri,config=config)
 				kargs["start_response"]("200 OK", [('Content-type','text/html')])
 				return rendered, kargs['environ']
 		except:
