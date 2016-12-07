@@ -27,9 +27,9 @@ if test "$yn" == "" || test "$yn" == "y" || test "$yn" == "Y"; then
 else
 	echo Aborting.
 fi
-echo This installer uses upstart. To control your server, use:
+echo This installer uses systemd. To control your server, use:
 echo
 echo sudo systemctl '<'start'|'stop'|'restart'|'status'>' mako-server
 echo
 echo Installer exiting. mako-server configured to start on boot.
-echo The mako-server upstart process will not restart if it fails.
+echo The mako-server systemd service will not restart if it fails.

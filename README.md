@@ -11,7 +11,7 @@ I recommend starting it like ./server.py or /etc/mako-server/server.py, but you 
 
 There is currently an installer for Mac OS X, but all it does is make the "mako-server-start" "mako-server-stop" and "mako-server-restart", then install launchd job to daemonize the server, you still have to put these files somewhere on your system, like /etc or /Library
 
-There is currently an installer for linux, but it requires upstart, and requires that you keep the files somewhere on your system.
+There is currently an installer for linux, but it requires systemd, and requires that you keep the files somewhere on your system.
 
 ## Planned features
 
