@@ -24,18 +24,20 @@ def onLoad(**kargs):
 #* @params			function start_response, dictionary environ, function log, string logfile, string root, function serverError, object config, string file, function getfield
 #* @returns			string a rendered mako file or a static file or a directory listing or a 404 error or a 403 or a 500 error, dictionary environment
 def onRequest(**kargs):
-	#**
-	#* I have no idea what this does
-	fieldstorage = cgi.FieldStorage(
-			fp = kargs["environ"]['wsgi.input'],
-			environ = kargs['environ'],
-			keep_blank_values = True
-	)
-	#**
-	#* This sets d to the GET/POST headers, probably
-	d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
-	if d:
-		kargs['log']("Rendering page with cgi variables: " + str(d))
+	d = {}
+	if kargs["environ"].get("CONTENT_TYPE", "".lower()) == "application/json":
+		d = kargs["environ"]["wsgi.input"].read(int(kargs["environ"].get("CONTENT_LENGTH", 0)))
+	else:
+		#**
+		#* This sets d to the GET/POST headers, probably
+		fieldstorage = cgi.FieldStorage(
+				fp = kargs["environ"]['wsgi.input'],
+				environ = kargs['environ'],
+				keep_blank_values = True
+		)
+		d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
+	#if d:
+		#kargs['log']("Rendering page with cgi variables: " + str(d))
 	#**
 	#* This sets URI to something like "/" or "/index.pyhtml" or "/directory/specific_file.pyhtml"
 	uri = kargs["environ"].get('PATH_INFO', '/')
