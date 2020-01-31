@@ -1,6 +1,7 @@
 import sys,cgi,re,os,mimetypes,traceback
 from mako.lookup import TemplateLookup
 from mako import exceptions
+from cookies import Cookies
 if __name__ == '__main__':
 	print "Do not invoke this directly"#you dumb shit
 	sys.exit(1)
@@ -25,7 +26,7 @@ def onLoad(**kargs):
 #* @returns			string a rendered mako file or a static file or a directory listing or a 404 error or a 403 or a 500 error, dictionary environment
 def onRequest(**kargs):
 	d = {}
-	if kargs["environ"].get("CONTENT_TYPE", "".lower()) == "application/json":
+	if kargs["environ"].get("CONTENT_TYPE", "").lower() == "application/json":
 		d = kargs["environ"]["wsgi.input"].read(int(kargs["environ"].get("CONTENT_LENGTH", 0)))
 	else:
 		#**
@@ -36,6 +37,12 @@ def onRequest(**kargs):
 				keep_blank_values = True
 		)
 		d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
+	c = kargs["environ"].get("HTTP_COOKIE", "")
+	if c:
+		c = Cookies.from_request(c)
+		c = {k: v.value for k, v in c.items()}
+	else:
+		c = {}
 	#if d:
 		#kargs['log']("Rendering page with cgi variables: " + str(d))
 	#**
@@ -60,7 +67,7 @@ def onRequest(**kargs):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("list.pyhtml").render(filename=filename,config=kargs["config"],d=d,uri=uri)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("list.pyhtml").render(filename=filename,config=kargs["config"],c=c,d=d,uri=uri)
 					kargs["start_response"]("200 OK", [('Content-type','text/html')])
 					return rendered, kargs['environ']
 				except OSError:
@@ -74,8 +81,8 @@ def onRequest(**kargs):
 	#* If the uri ends with .pyhtml, attempt to serve the file using mako
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
-			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template(uri).render(d=d,uri=uri,environ=kargs["environ"])
-			kargs["start_response"]("200 OK", [('Content-type','text/html')])
+			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template(uri).render(c=c,d=d,uri=uri,environ=kargs["environ"])
+			kargs["start_response"]("200 OK", [('Content-type','text/html')] + kargs["environ"].get("headers", []))
 			return rendered, kargs['environ']
 		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
 			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
