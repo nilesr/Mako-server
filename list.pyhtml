@@ -1,5 +1,5 @@
 <%!
-import cgi, os, time, mimetypes, datetime, re
+import html, os, time, mimetypes, datetime, re
 %>
 <%
 mimetypes.init()
@@ -29,9 +29,9 @@ tr, td, th {padding-bottom:0px;margin-bottom:0px;}
 </style>
 </head>
 <body>
-<h2>Directory listing for ${cgi.escape(uri)}</h2>
+<h2>Directory listing for ${html.escape(uri)}</h2>
 <div id="content">
-<h3>The file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(uri)}</span> could not be found</h3>
+<h3>The file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${html.escape(uri)}</span> could not be found</h3>
 This is a directory listing
 <hr />
 <div class="list">
@@ -49,12 +49,12 @@ This is a directory listing
 % for fileString in fArray:
 <tr>
 % if os.path.isdir(filename[0:-12] + fileString):
-<td><a href="${cgi.escape(uri[0:-12]+fileString)}">${cgi.escape(fileString)}</a>/</td>
+<td><a href="${html.escape(uri[0:-12]+fileString)}">${html.escape(fileString)}</a>/</td>
 <td>${datetime.datetime.strptime(time.ctime(os.path.getmtime(filename[0:-12]+"/"+fileString)),"%a %b %d %H:%M:%S %Y").strftime("%Y-%b-%d %H:%M:%S")}</td>
 <td class="s">- &nbsp;</td>
 <td>Directory</td>
 % else:
-<td><a href="${cgi.escape(uri[0:-12] + fileString)}">${cgi.escape(fileString)}</a></td>
+<td><a href="${html.escape(uri[0:-12] + fileString)}">${html.escape(fileString)}</a></td>
 <td>${datetime.datetime.strptime(time.ctime(os.path.getmtime(filename[0:-12]+"/"+fileString)),"%a %b %d %H:%M:%S %Y").strftime("%Y-%b-%d %H:%M:%S")}</td>
 <td class="s">${sizeof(os.path.getsize(filename[0:-12]+"/"+fileString))}</td>
 <td>${mimetypes.guess_type(filename[0:-12]+"/"+fileString)[0]}</td>

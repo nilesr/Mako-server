@@ -3,3 +3,4 @@ temporary_files
 config.conf
 server.pem
 server.log
+__pycache__

@@ -1,6 +1,6 @@
 import sys,os,re
 if __name__ == '__main__':
-	print "Do not invoke this directly"
+	print("Do not invoke this directly")
 	sys.exit(1)
 #**
 #* Loads the relevant configuration options, imports mod_default, and logs a message

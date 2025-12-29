@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 %>
 <html>
 <head>
@@ -9,7 +9,7 @@ import cgi
 <body>
 <h2>403 error</h2>
 <div id="content">
-<h3>You do not have permission to view <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(filename)}</span></h3>
+<h3>You do not have permission to view <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${html.escape(filename)}</span></h3>
 This could be because it is a directory, and the server administrator has disallowed directory listings
 </div>
 </body>

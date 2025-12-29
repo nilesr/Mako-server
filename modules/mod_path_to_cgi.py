@@ -1,6 +1,6 @@
-import sys,os,re,ConfigParser,traceback
+import sys,os,re,configparser,traceback
 if __name__ == '__main__':
-	print "Do not invoke this directly"
+	print("Do not invoke this directly")
 	sys.exit(1)
 #**
 #* Loads the relevant configuration options, and logs a message
@@ -18,7 +18,7 @@ def onLoad(**kargs):
 		for set in kargs["config"].get("mod_path_to_cgi","sets").split(kargs["config"].get("general","listDelimiter")):
 			try:
 				sets[set] = (kargs["config"].get("mod_path_to_cgi",set).split(kargs["config"].get("general","listDelimiter")))
-			except ConfigParser.NoOptionError:
+			except configparser.NoOptionError:
 				kargs['log'](traceback.format_exc())
 				continue
 	except:

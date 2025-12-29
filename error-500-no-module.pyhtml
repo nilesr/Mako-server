@@ -1,5 +1,5 @@
 <%!
-import cgi
+import html
 %>
 <html>
 <head>
@@ -9,8 +9,8 @@ import cgi
 <body>
 <h2>Error 500 - No loaded module is equipped to handle this file</h2>
 <div id="content">
-<h3>Error 500 - No loaded module is equipped to handle the file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${cgi.escape(uri)}</span></h3>
-Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>.
+<h3>Error 500 - No loaded module is equipped to handle the file <span style="background-color:lightgrey;border:1px solid grey;border-radius:4px;">${html.escape(uri)}</span></h3>
+Please email the administrator of the server <a href="mailto:${html.escape(config.get("general","email"))}">here</a>.
 </div>
 </body>
 </html>

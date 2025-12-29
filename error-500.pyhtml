@@ -1,5 +1,5 @@
 <%!
-import cgi, traceback
+import html, traceback
 %>
 <html>
 <head>
@@ -20,7 +20,7 @@ except:
 ${x}
 % endif
 <br />
-Please email the administrator of the server <a href="mailto:${cgi.escape(config.get("general","email"))}">here</a>
+Please email the administrator of the server <a href="mailto:${html.escape(config.get("general","email"))}">here</a>
 </div>
 </body>
 </html>

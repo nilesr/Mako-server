@@ -2,7 +2,7 @@ import sys,os
 from mako.lookup import TemplateLookup
 from mako import exceptions
 if __name__ == '__main__':
-	print "Do not invoke this directly"
+	print("Do not invoke this directly")
 	sys.exit(1)
 #**
 #* Logs a message
@@ -22,4 +22,5 @@ def onLoad(**kargs):
 #* @returns			string the rendered template for the 500 nothing executed file, dictionary environment
 def onRequest(**kargs):
 	kargs["start_response"]("500 Nothing executed", [('Content-type','text/html')])
-	return TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files').get_template("error-500-no-module.pyhtml").render(config=kargs["config"],uri=kargs['environ']['PATH_INFO']), kargs['environ']
+	kargs['log'](TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files',output_encoding='utf-8').get_template("error-500-no-module.pyhtml").render(config=kargs["config"],uri=kargs['environ']['PATH_INFO']).decode("utf-8"))
+	return TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files',output_encoding='utf-8').get_template("error-500-no-module.pyhtml").render(config=kargs["config"],uri=kargs['environ']['PATH_INFO']), kargs['environ']

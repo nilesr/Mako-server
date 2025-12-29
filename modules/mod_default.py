@@ -1,9 +1,9 @@
 import sys,cgi,re,os,mimetypes,traceback
 from mako.lookup import TemplateLookup
 from mako import exceptions
-from cookies import Cookies
+import http.cookies as cookies
 if __name__ == '__main__':
-	print "Do not invoke this directly"#you dumb shit
+	print("Do not invoke this directly")#you dumb shit
 	sys.exit(1)
 #**
 #* Loads the relevant configuration options, and logs a message
@@ -39,8 +39,8 @@ def onRequest(**kargs):
 		d = dict([(k, kargs["getfield"](fieldstorage[k])) for k in fieldstorage])
 	c = kargs["environ"].get("HTTP_COOKIE", "")
 	if c:
-		c = Cookies.from_request(c)
-		c = {k: v.value for k, v in c.items()}
+		c = cookies.BaseCookie(c)
+		c = {k: v.value for k, v in list(c.items())}
 	else:
 		c = {}
 	#if d:
@@ -67,7 +67,7 @@ def onRequest(**kargs):
 		if not os.path.exists(filename):
 			if listdirectories:
 				try:
-					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("list.pyhtml").render(filename=filename,config=kargs["config"],c=c,d=d,uri=uri)
+					rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root'],output_encoding='utf-8').get_template("list.pyhtml").render(filename=filename,config=kargs["config"],c=c,d=d,uri=uri)
 					kargs["start_response"]("200 OK", [('Content-type','text/html')])
 					return rendered, kargs['environ']
 				except OSError:
@@ -81,10 +81,11 @@ def onRequest(**kargs):
 	#* If the uri ends with .pyhtml, attempt to serve the file using mako
 	if re.match(r'.*\.pyhtml$', uri):
 		try:
-			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template(uri).render(c=c,d=d,uri=uri,environ=kargs["environ"])
+			rendered = TemplateLookup(directories=[kargs["root"]], filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root'],output_encoding='utf-8').get_template(uri).render(c=c,d=d,uri=uri,environ=kargs["environ"])
 			kargs["start_response"]("200 OK", [('Content-type','text/html')] + kargs["environ"].get("headers", []))
 			return rendered, kargs['environ']
-		except exceptions.TopLevelLookupException, exceptions.TemplateLookupException:
+		except exceptions.TopLevelLookupException as xxx_todo_changeme:
+			exceptions.TemplateLookupException = xxx_todo_changeme
 			return kargs["serverError"](kargs["start_response"],404,uri), kargs['environ']
 		except:
 			kargs['log'](traceback.format_exc())
@@ -104,7 +105,7 @@ def onRequest(**kargs):
 				try:
 					#**
 					#* This is very slow, because we load the entire file, then pass it up. There is probably a way to speed this up, but until then it's going to take like 0.7 seconds to load a 4 kilobyte file
-					rendered = file(filename).read()
+					rendered = open(filename, "rb").read()
 				except:
 					return kargs["serverError"](kargs["start_response"],403,uri), kargs['environ']
 				kargs["start_response"]("200 OK", [('Content-type',mime)])
@@ -113,7 +114,7 @@ def onRequest(**kargs):
 				else:
 					return rendered, kargs['environ']
 			else:
-				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root']).get_template("no.static.pyhtml").render(filename=uri,config=config)
+				rendered = TemplateLookup(directories=os.path.dirname(os.path.realpath(kargs["file"])),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(kargs["file"]))+'/temporary_files' + kargs['root'],output_encoding='utf-8').get_template("no.static.pyhtml").render(filename=uri,config=config)
 				kargs["start_response"]("200 OK", [('Content-type','text/html')])
 				return rendered, kargs['environ']
 		except:

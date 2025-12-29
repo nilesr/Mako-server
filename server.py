@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 sys.path.append("/usr/local/lib/python2.7/site-packages/")
-import cgi, re, os, mimetypes, ConfigParser, subprocess, glob, signal, time,traceback, threading
+import cgi, re, os, mimetypes, configparser, subprocess, glob, signal, time,traceback, threading
 #**
 #* Logs a message, to both stdout and a logfile, if applicable
 #* @author			Niles Rogoff <nilesrogoff@gmail.com>
@@ -16,8 +16,8 @@ def log(missive):
 			logfileobject.write(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive + "\r\n")
 			logfileobject.close()
 		except OSError:
-			print "Error opening logfile. Non-fatal"
-	print sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive
+			print("Error opening logfile. Non-fatal")
+	print(sys.argv[0] + " " + time.strftime("%d/%m/%Y %H:%M:%S") + "\t" + missive)
 #**
 #* Sends an error message to the client
 #* <p>
@@ -33,19 +33,19 @@ def serverError(start_response,status,filename="",**kargs):
 			start_response("500 Internal Server Error", [('Content-type','text/html')])
 		except: # This hapends if the headers were already set by something else
 			pass
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-500.pyhtml").render(filename=filename,config=config,kargs=kargs)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files', output_encoding='utf-8').get_template("error-500.pyhtml").render(filename=filename,config=config,kargs=kargs)
 	elif status == 404:
 		try:
 			start_response("404 Not found", [('Content-type','text/html')])
 		except: # This hapends if the headers were already set by something else
 			pass
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-404.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files', output_encoding='utf-8').get_template("error-404.pyhtml").render(filename=filename,config=config)
 	elif status == 403:
 		try:
 			start_response("403 Permission denied", [('Content-type','text/html')])
 		except: # This hapends if the headers were already set by something else
 			pass
-		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files').get_template("error-403.pyhtml").render(filename=filename,config=config)
+		return TemplateLookup(directories=os.path.dirname(os.path.realpath(__file__)),filesystem_checks=True, module_directory=os.path.dirname(os.path.realpath(__file__))+'/temporary_files', output_encoding='utf-8').get_template("error-403.pyhtml").render(filename=filename,config=config)
 	else:
 		try:
 			start_response("500 Internal Server Error", [('Content-type','text/html')])
@@ -65,14 +65,14 @@ def serve(environ, start_response):
 		try:
 			returnvalue, new_environ = module.onRequest(start_response=start_response,environ=new_environ,log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
 			if returnvalue:
-				return returnvalue
+				return [returnvalue]
 		except:
 			log(traceback.format_exc())
 	try:
 		start_response("500 Internal Server Error", [('Content-type','text/text')])
 	except:
 		pass
-	return "No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')
+	return [("No module was loaded to handle this case. The server owner has fucked some shit up really bad. Go yell at him. " + config.get('general','email')).encode("utf-8")]
 #**
 #* Gets the entry for a field from a POST or GET form request, probably
 #* <p>
@@ -118,7 +118,7 @@ if __name__ == '__main__':
 	mimetypes.init()
 	#**
 	#* Reads the configuration file.
-	config = ConfigParser.SafeConfigParser()
+	config = configparser.ConfigParser()
 #	configfile = os.path.dirname(os.path.realpath(__file__)) + "/config.conf"
 	logfile = False
 	#**
@@ -145,24 +145,8 @@ if __name__ == '__main__':
 		try:
 			#sihipsterm = getattr(signal,i)
 			signal.signal(i,signaled)
-		except RuntimeError,m:
+		except RuntimeError as m:
 			pass
-	#**
-	#* I have NO IDEA why, but if you don't start python with -O, it throws NoneType and "write() argument must be string" exceptions, then just closes the connection. 
-	#* -O runs optimizations, by the way
-	if __debug__:	
-		log("Nonfatal warning: Restarting with -O")
-		listofarguments = ["/usr/bin/env", "python", "-O"]
-		for argument in sys.argv:
-			if argument == __file__:
-				continue
-			listofarguments.append(argument)
-		listofarguments.append(__file__)
-		log("Calling " + " ".join(listofarguments))
-		try:
-			sys.exit(subprocess.call(listofarguments))
-		except:
-			sys.exit(1)
 	#**
 	#* Makes a random pid file.
 	pidfile = subprocess.check_output(["/usr/bin/env","mktemp","/tmp/mako.XXXXXX"])[0:-1]
@@ -204,9 +188,10 @@ if __name__ == '__main__':
 	#**
 	#* Attempts to read the config file.
 	try:
-		config.readfp(open(configfile))
+		config.read(configfile)
 	except:
 		log("Fatal error: Config file read failure")
+		traceback.print_exc()
 		sys.exit(1)
 	#**
 	#* Attempts to kill all other mako servers, unless the "--suppress-urge-to-kill" argument was passed.
@@ -311,9 +296,10 @@ if __name__ == '__main__':
 	modules = config.get("server","modules").split(config.get("general","listDelimiter"))
 	sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/modules')
 	try:
-		moduleObjects = map(__import__, modules)
+		moduleObjects = list(map(__import__, modules))
 	except:
 		log("Fatal error: One or more modules failed to import. Please check your config file, and each module file")
+		log(traceback.format_exc())
 		sys.exit(1)
 	for module in moduleObjects:
 		module.onLoad(log=log,logfile=logfile,root=root,serverError=serverError,config=config,file=__file__,getfield=getfield)
